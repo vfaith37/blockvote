@@ -65,7 +65,7 @@ export default function Landing() {
         <img src={WEB_IMAGE} alt="web" className="w-[550px] h-[550px]" />
       </div>
 
-      <div className="py-16" id="services">
+      <div className="py-16 flex flex-col items-center" id="services">
         <div className="flex flex-col items-center">
           <p className="text-teal-600 text-2xl font-bold">WHAT WE DO</p>
           <p className="text-4xl font-bold">Our mission explained</p>
@@ -75,7 +75,7 @@ export default function Landing() {
             administrators can manage elections with ease.
           </p>
         </div>
-        <img src={DASHBOARD_IMAGE} className="py-20 mx-36" alt="dashboard" />
+        <img src={DASHBOARD_IMAGE} className="mt-14" alt="dashboard" />
       </div>
 
       <div className="py-10">
