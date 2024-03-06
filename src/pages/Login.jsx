@@ -8,18 +8,18 @@ import client from "../api/client";
 
 const inputStyles =
   "w-full h-11 text-black py-2 my-2 bg-transparent rounded-md border border-black/40 pl-2";
-const Login = (props) => {
-  const {onLogin} = props
+const Login = () => {
   const [userInfo, setUserInfo] = useState(null);
+  const [userAuth, setUserAuth] = useState(null);
   const [userToken, setUserToken] = useState(null);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const onSubmit = async (values, actions) => {
+    setUserAuth(true);
     try {
       const res = await client.post("organization/signin", {
         ...values,
       });
-      console.log(res.data);
 
       if (res.data.organization.isVerified === true && res.status === 200) {
         let token = res.data.token;
@@ -28,11 +28,12 @@ const Login = (props) => {
         setUserInfo(userinfo);
         setUserToken(token);
         if (token != null && userinfo != null) {
+          let auth = true
+          localStorage.setItem("isAuthenticated", auth)
+          localStorage.setItem("rememberMe", rememberMe);
           localStorage.setItem("token", JSON.stringify(token));
           localStorage.setItem("userInfo", JSON.stringify(userinfo));
           localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
-          localStorage.setItem("rememberMe", JSON.stringify(rememberMe));
-          onLogin(true);
           navigate("/dashboard", { replace: true, });
         }
       } else if (
@@ -48,9 +49,9 @@ const Login = (props) => {
       console.log(e);
     } finally {
     }
-    console.log(actions);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
+    // console.log(actions);
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // actions.resetForm();
   };
 
   useEffect(() => {

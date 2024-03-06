@@ -17,11 +17,6 @@ import ErrorPage from "./components/ErrorPage";
 // import Layout from "./components/shared/layout";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const handleLogin = (loggedIn) => {
-    setIsAuthenticated(loggedIn);
-    localStorage.setItem("isAuthenticated", isAuthenticated)
-  };
   return (
     <>
       <Router>
@@ -43,7 +38,7 @@ function App() {
           </Route>
 
           <Route path="organization" element={<AuthLayout />}>
-            <Route index element={<Login onLogin={handleLogin} />}></Route>
+            <Route index element={<Login />}></Route>
             <Route path="signup" element={<Signup />}></Route>
             <Route path="forgotpassword" element={<Forgotpassword />}></Route>
             <Route path="otp" element={<OTP />}></Route>

@@ -14,6 +14,7 @@ export default function Sidebar() {
 		localStorage.removeItem("token")
 		localStorage.removeItem("refreshToken")
 		localStorage.removeItem("rememberMe")
+		localStorage.removeItem("isAuthenticated")
 		navigate("/", {replace: true})
 	}
   return (
