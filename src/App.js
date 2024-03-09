@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Layout from "./components/shared/Layout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -11,7 +16,12 @@ import Candidates from "./components/Candidates";
 import Create from "./components/Create";
 import Landing from "./pages/Landing";
 import VoterLayout from "./components/shared/VoterLayout";
-import { VotersWelcome, ElectionInfo, Vote } from "./components/VotersWelcome";
+import {
+  VotersWelcome,
+  ElectionInfo,
+  Vote,
+  VotingEnd,
+} from "./components/VotersWelcome";
 import { useState } from "react";
 import ErrorPage from "./components/ErrorPage";
 // import Layout from "./components/shared/layout";
@@ -24,11 +34,12 @@ function App() {
           <Route path="/" element={<Landing />}></Route>
 
           <Route path="voters" element={<VoterLayout />}>
-          {/* {isAuthenticated ? null : <Navigate to="/organization/login" />} */}
+            {/* {isAuthenticated ? null : <Navigate to="/organization/login" />} */}
             <Route index element={<VotersWelcome />}></Route>
             <Route path="info" element={<ElectionInfo />}></Route>
             <Route path="vote" element={<Vote />}></Route>
           </Route>
+          <Route path="votingend" element={<VotingEnd />}></Route>
 
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Overview />}></Route>

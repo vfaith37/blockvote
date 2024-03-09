@@ -1,12 +1,13 @@
 import React from "react";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import { HiOutlineSave } from "react-icons/hi";
 import { ELECTION_DATA } from "../data/dummydata";
 import classNames from "classnames";
+import BarChart from "./Chart";
 
 export default function Overview() {
   const today = new Date();
-  const formattedDate = format(today, 'EEE dd MMM, yyy')
+  const formattedDate = format(today, "EEE dd MMM, yyy");
   return (
     <div className="text-white">
       <div className="flex justify-between items-center">
@@ -24,7 +25,9 @@ export default function Overview() {
         </div>
       </div>
 
-      <div className="py-10 items-center">Chart</div>
+      <div className="my-10 border border-white rounded-xl p-6">
+        <BarChart />
+      </div>
 
       <div className="grid grid-cols-2 gap-7">
         <div className="rounded-lg bg-neutral-600 px-10 py-10">
@@ -36,7 +39,7 @@ export default function Overview() {
             {ELECTION_DATA.map((item) => {
               return (
                 <div
-                key={item.title}
+                  key={item.title}
                   className={classNames(
                     item.status === "Ongoing"
                       ? "bg-green-700"
