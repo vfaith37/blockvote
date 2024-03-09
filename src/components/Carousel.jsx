@@ -3,22 +3,24 @@ import { HiCheck, HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 const Carousel = (props) => {
   const { data } = props;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [select, setSelect] = useState(false);
+
   const previous = () => {
-    if (currentIndex > 1) {
+    if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
   };
 
   const forward = () => {
-    if (currentIndex < data.length) {
+    if (currentIndex < data.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [select, setSelect] = useState(false);
+
   const selectImage = (index) => {
     setCurrentIndex(index);
-    setSelect()
+    setSelect(index);
   };
 
   return (
@@ -29,14 +31,13 @@ const Carousel = (props) => {
         size={120}
       />
       {data.map((item, index) => (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center" key={index}>
           {select !== false && currentIndex === index ? (
             <div className="rounded-full cursor-pointer w-32 h-32 flex justify-center items-center bg-teal-600">
               <HiCheck size={70} />
             </div>
           ) : (
             <img
-              key={index}
               src={item.image}
               alt="candidate"
               className={`rounded-full cursor-pointer w-32 h-32 ${
@@ -54,7 +55,9 @@ const Carousel = (props) => {
         </div>
       ))}
       <HiChevronRight
-        className="text-neutral-500 cursor-pointer"
+        className={`text-neutral-500 cursor-pointer ${
+          currentIndex === data.length - 1 ? "opacity-50" : ""
+        }`}
         onClick={forward}
         size={120}
       />

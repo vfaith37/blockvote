@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import PROFILE_IMAGE from "../../assets/profile.jpg";
-// import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import Web3 from "web3";
+import client from "../../api/client";
 
 export default function Header() {
   const [provider, setProvider] = useState(null);
@@ -25,44 +26,68 @@ export default function Header() {
 
   async function connectToMetamask() {
     if (window.ethereum) {
-      // try {
-      //   const provider = window.ethereum
-      //     ? new ethers.providers.Web3Provider(window.ethereum)
-      //     : ethers.getDefaultProvider();
-
-      //   setProvider(provider);
-
-      //   // Ensure the provider is properly initialized
-      //   await provider.ready;
-      //   console.log(provider);
-
-      //   const signer = provider.getSigner();
-      //   console.log(signer);
-      //   const address = await signer.getAddress();
-
-      //   setAccount(address);
-      //   console.log("Metamask Connected:", address);
-      //   setIsConnected(true);
-      //   // await checkCanVote();
-      // } catch (err) {
-      //   console.error("Error connecting to MetaMask:", err);
-      // }
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        const account = accounts[0];
+        setIsConnected(true);
+        setAccount(account);
+        // console.log("Connected account:", account);
+        // if (account !== null) {
+        //   const res = await client.post("walletAddress", {})
+        //   if (res.status === 200) {
+        //     console.log(res.data);
+        //     setIsConnected(true);
+        //     setAccount(account)
+        //   }
+        // }
+      } catch (error) {
+        console.error("Failed to connect to MetaMask:", error);
+        setIsConnected(false);
+      }
     } else {
-      console.error("MetaMask is not detected in the browser");
+      alert("Please install MetaMask!");
     }
+    // if (window.ethereum) {
+    //   try {
+    //     const provider = window.ethereum
+    //       ? new ethers.providers.Web3Provider(window.ethereum)
+    //       : ethers.getDefaultProvider();
+
+    //     setProvider(provider);
+
+    //     // Ensure the provider is properly initialized
+    //     await provider.ready;
+    //     console.log(provider);
+
+    //     const signer = provider.getSigner();
+    //     console.log(signer);
+    //     const address = await signer.getAddress();
+
+    //     setAccount(address);
+    //     console.log("Metamask Connected:", address);
+    //     setIsConnected(true);
+    //     // await checkCanVote();
+    //   } catch (err) {
+    //     console.error("Error connecting to MetaMask:", err);
+    //   }
+    // } else {
+    //   console.error("MetaMask is not detected in the browser");
+    // }
   }
 
-  const detectCurrentProvider = () => {
-    let provider;
-    if (window.ethereum) {
-      provider = window.ethereum;
-    } else if (window.web3) {
-      provider = window.web3.currentProvider;
-    } else {
-      console.log("Non-ethereum browser detected. You should install Metamask");
-    }
-    return provider;
-  };
+  // const detectCurrentProvider = () => {
+  //   let provider;
+  //   if (window.ethereum) {
+  //     provider = window.ethereum;
+  //   } else if (window.web3) {
+  //     provider = window.web3.currentProvider;
+  //   } else {
+  //     alert("Non-ethereum browser detected. You should install Metamask");
+  //   }
+  //   return provider;
+  // };
 
   // const onConnect = async () => {
   //   try {
@@ -103,26 +128,13 @@ export default function Header() {
 
       {isConnected ? (
         <>
-          {/* <div className="app-wrapper">
-          <div className="app-details">
-            <h2> You are connected to metamask.</h2>
-            <div className="app-balance">
-              <span>Balance: </span>
-              {ethBalance}
-            </div>
-          </div>
-          <div>
-            <button className="app-buttons__logout" onClick={onDisconnect}>
-              Disconnect
-            </button>
-          </div>
-        </div> */}
           <button
-            className="gap-2 flex w-28 h-10 justify-center bg-teal-600 rounded items-center font-medium text-base"
+            className="flex w-28 h-10 justify-center bg-teal-600 rounded items-center font-medium text-base"
             onClick={onDisconnect}
           >
             Disconnect
           </button>
+          {account !== null && <p className="text-white absolute right-40 ">Wallet Address: {account}</p>}
         </>
       ) : (
         <>

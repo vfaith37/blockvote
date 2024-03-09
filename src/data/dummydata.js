@@ -130,4 +130,24 @@ export const Data = [
     course: "CS",
     position: "Vice President",
   },
+  {
+    image: "https://unsplash.it/640/425?image=60",
+    firstname: "benjamin",
+    lastname: "daniel",
+    course: "CS",
+    position: "PRO",
+  },
+  {
+    image: "https://unsplash.it/640/425?image=60",
+    firstname: "joel",
+    lastname: "ichibor",
+    course: "CS",
+    position: "PRO",
+  },  {
+    image: "https://unsplash.it/640/425?image=60",
+    firstname: "Temilouwa",
+    lastname: "seyi-oduntan",
+    course: "CS",
+    position: "PRO",
+  },
 ];
