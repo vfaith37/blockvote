@@ -8,7 +8,7 @@ const ErrorPage = () => {
         navigate("/")
     }
   return (
-    <div className="flex flex-col justify-center items-center w-screen h-screen overflow-hidden text-white bg-[url('https://images.unsplash.com/photo-1613588718956-c2e80305bf61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80')] bg-black bg-cover bg-center">
+    <div className="flex flex-col justify-center items-center w-screen h-screen overflow-hidden text-white bg-[url('./assets/bge.png')] bg-black bg-cover bg-center">
       <div className="flex">
         <img src={LOGO} alt="blockvote" className="h-4 mr-2 mt-2" />
         <h1 className="text-xl font-bold mr-auto">blockvote</h1>

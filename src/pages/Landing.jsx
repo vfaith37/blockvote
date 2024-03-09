@@ -44,7 +44,7 @@ export default function Landing() {
           </button>
         </div>
       </div>
-      <div className="flex justify-between py-20 items-center bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-400 via-black to-black">
+      <div className="flex justify-between py-20 items-center bg-hero bg-cover bg-center">
         <div className="w-[587px]">
           <p className="text-6xl font-bold pb-8">
             <span className="text-teal-600">Secure</span> &{" "}
