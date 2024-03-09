@@ -150,4 +150,11 @@ export const Data = [
     course: "CS",
     position: "PRO",
   },
+  {
+    image: "https://unsplash.it/640/425?image=60",
+    firstname: "Lawal",
+    lastname: "Mubaraq",
+    course: "CS",
+    position: "PRO",
+  },
 ];
