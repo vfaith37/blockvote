@@ -1,30 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import WEB_IMAGE from "../assets/web.png";
 import LOGO from "../assets/logo.png";
 import DASHBOARD_IMAGE from "../assets/dashboard.png";
 import DASHBOARD_IMG from "../assets/img.png";
 import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { HiMoon, HiSun } from "react-icons/hi";
 
 export default function Landing() {
   const navigate = useNavigate();
-
+  
   return (
-    <div className="w-full h-full bg-black text-white py-10 px-36 scroll-smooth touch-auto bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-teal-600 via-black to-black ">
-      <div className="flex justify-between h-10 items-center">
+    <div className="w-full h-full bg-white dark:bg-black text-black dark:text-white py-10 px-36 scroll-smooth touch-auto ">
+      <div className="flex justify-between h-10 items-center ">
         <div className="flex items-center gap-2 px-2 py-3">
           <img src={LOGO} alt="blockvote" className="h-4" />
           <h1 className="text-xl font-bold mr-auto">blockvote</h1>
         </div>
 
         <div className="flex gap-20">
-          <a href="#services" className="text-white hover:text-teal-600">
+          <a href="#services" className="text-black dark:text-white hover:text-teal-600">
             <div className="text-lg font-medium">Services</div>
           </a>
-          <a href="#about" className="text-white hover:text-teal-600">
+          <a href="#about" className="text-black dark:text-white hover:text-teal-600">
             <div className="text-lg font-medium">About</div>
           </a>
-          <a href="#contact" className="text-white hover:text-teal-600">
+          <a href="#contact" className="text-black dark:text-white hover:text-teal-600">
             <div className="text-lg font-medium">Contact</div>
           </a>
         </div>
@@ -42,6 +43,7 @@ export default function Landing() {
           >
             Sign Up
           </button>
+          
         </div>
       </div>
       <div className="flex justify-between py-20 items-center bg-hero bg-cover bg-center">
@@ -51,9 +53,9 @@ export default function Landing() {
             <span className="text-teal-600">accessible</span> voting at your
             fingertips.
           </p>
-          <p className="text-white text-base font-medium">
+          <p className="text-base font-medium">
             A specialized voting platform based on{" "}
-            <span className="text-neutral-600 font-extrabold">blockchain</span>{" "}
+            <span className="dark:text-neutral-600 text-teal-600 font-extrabold">blockchain</span>{" "}
             designed for Voters and Candidates, facilitating a smooth electoral
             process across multiple <br />
             channels.
@@ -62,7 +64,7 @@ export default function Landing() {
             <p className="text-white text-base font-bold">Get Started</p>
           </div>
         </div>
-        <img src={WEB_IMAGE} alt="web" className="w-[550px] h-[550px]" />
+        <img src={WEB_IMAGE} alt="web" className="w-[550px] h-[550px] decoration-black" />
       </div>
 
       <div className="py-16 flex flex-col items-center" id="services">
