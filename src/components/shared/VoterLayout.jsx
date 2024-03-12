@@ -18,10 +18,10 @@ export default function VoterLayout() {
   };
   console.log(theme);
   return (
-    <div className="w-full h-screen dark:bg-black dark:text-white bg-white text-black flex flex-col mt-5">
+    <div className="w-full h-screen dark:bg-black dark:text-white bg-white text-black flex flex-col">
        <button
           onClick={handleSwitch}
-          className="text-lg font-medium items-center inline-flex cursor-pointer self-end mr-5"
+          className="text-lg font-medium items-center inline-flex cursor-pointer self-end mt-5 mr-5"
         >
           {theme === "dark" ? <HiMoon size={30} /> : <HiSun size={30} />}
         </button>
