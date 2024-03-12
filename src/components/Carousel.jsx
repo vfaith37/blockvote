@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { HiCheck, HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 const Carousel = (props) => {
-  const { data } = props;
+  const { data, onSelect } = props;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [select, setSelect] = useState(false);
 
@@ -20,16 +20,19 @@ const Carousel = (props) => {
 
   const selectImage = (index) => {
     setCurrentIndex(index);
+    onSelect(data[index]);
     setSelect(index);
   };
 
   return (
     <div className="flex gap-20 justify-between my-[68px] items-center">
-      <HiChevronLeft
-        className="text-neutral-500 cursor-pointer"
-        onClick={previous}
-        size={120}
-      />
+      {data.length === 7 && (
+        <HiChevronLeft
+          className="text-neutral-500 cursor-pointer"
+          onClick={previous}
+          size={120}
+        />
+      )}
       {data.map((item, index) => (
         <div className="flex flex-col items-center" key={index}>
           {select !== false && currentIndex === index ? (
@@ -54,13 +57,16 @@ const Carousel = (props) => {
           <p className="mt-[7px] text-neutral-500 text-base">{item.course}</p>
         </div>
       ))}
-      <HiChevronRight
-        className={`text-neutral-500 cursor-pointer ${
-          currentIndex === data.length - 1 ? "opacity-50" : ""
-        }`}
-        onClick={forward}
-        size={120}
-      />
+
+      {data.length === 7 && (
+        <HiChevronRight
+          className={`text-neutral-500 cursor-pointer ${
+            currentIndex === data.length - 1 ? "opacity-50" : ""
+          }`}
+          onClick={forward}
+          size={120}
+        />
+      )}
     </div>
   );
 };

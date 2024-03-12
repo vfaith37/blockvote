@@ -37,30 +37,6 @@ const Signup = () => {
     actions.resetForm();
   };
 
-  // const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-  //   // try {
-  //   //   const response = await fetch("https://localhost:27000/api/signup", {
-  //   //     method: "POST",
-  //   //     headers: {
-  //   //       "Content-Type": "application/json",
-  //   //     },
-  //   //     body: JSON.stringify(values),
-  //   //   });
-
-  //   //   if (!response.ok) {
-  //   //     const errorData = await response.json();
-  //   //     throw new Error(errorData.message);
-  //   //   }
-
-  //   //   // Handle successful signup
-  //   //   console.log("Signup successful!");
-  //   // } catch (error) {
-  //   //   setErrors({ submit: error.message });
-  //   // } finally {
-  //   //   setSubmitting(false);
-  //   // }
-  //   console.log(values);
-  // };
   const [check, setCheck] = useState(false);
   const {
     values,

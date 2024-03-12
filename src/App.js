@@ -21,6 +21,7 @@ import {
   ElectionInfo,
   Vote,
   VotingEnd,
+  VoterSelect,
 } from "./components/VotersWelcome";
 import { useState } from "react";
 import ErrorPage from "./components/ErrorPage";
@@ -40,6 +41,7 @@ function App() {
             <Route path="vote" element={<Vote />}></Route>
           </Route>
           <Route path="votingend" element={<VotingEnd />}></Route>
+          <Route path="voterselect" element={<VoterSelect />}></Route>
 
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Overview />}></Route>
