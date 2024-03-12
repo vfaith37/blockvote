@@ -18,7 +18,7 @@ export default function VoterLayout() {
   };
   console.log(theme);
   return (
-    <div className="w-full h-screen dark:bg-black dark:text-white bg-white text-black flex flex-col pt-5">
+    <div className="w-full h-screen dark:bg-black dark:text-white bg-white text-black flex flex-col mt-5">
        <button
           onClick={handleSwitch}
           className="text-lg font-medium items-center inline-flex cursor-pointer self-end mr-5"
