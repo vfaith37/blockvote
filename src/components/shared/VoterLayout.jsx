@@ -5,23 +5,34 @@ import LOGO from "../../assets/logo.png";
 import { HiMoon, HiSun } from "react-icons/hi";
 export default function VoterLayout() {
   const [theme, setTheme] = useState("dark");
+  
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setTheme(storedTheme);
+    } else {
+      localStorage.setItem("theme", theme);
+    }
+  }, []);
+
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
-      // console.log(12, theme);
     } else {
       document.documentElement.classList.remove("dark");
     }
   }, [theme]);
   const handleSwitch = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
   };
-  console.log(theme);
+
   return (
     <div className="w-full h-screen dark:bg-black dark:text-white bg-white text-black flex flex-col">
        <button
           onClick={handleSwitch}
-          className="cursor-pointer self-end mt-5 mr-5"
+          className="text-lg font-medium items-center inline-flex cursor-pointer self-end mt-5 mr-5"
         >
           {theme === "dark" ? <HiMoon size={30} /> : <HiSun size={30} />}
         </button>

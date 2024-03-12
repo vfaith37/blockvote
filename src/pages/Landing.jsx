@@ -9,7 +9,30 @@ import { HiMoon, HiSun } from "react-icons/hi";
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [theme, setTheme] = useState("dark");
   
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setTheme(storedTheme);
+    } else {
+      localStorage.setItem("theme", theme);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+  const handleSwitch = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
   return (
     <div className="w-full h-full bg-white dark:bg-black text-black dark:text-white py-10 px-36 scroll-smooth touch-auto ">
       <div className="flex justify-between h-10 items-center ">
@@ -19,13 +42,22 @@ export default function Landing() {
         </div>
 
         <div className="flex gap-20">
-          <a href="#services" className="text-black dark:text-white hover:text-teal-600">
+          <a
+            href="#services"
+            className="text-black dark:text-white hover:text-teal-600"
+          >
             <div className="text-lg font-medium">Services</div>
           </a>
-          <a href="#about" className="text-black dark:text-white hover:text-teal-600">
+          <a
+            href="#about"
+            className="text-black dark:text-white hover:text-teal-600"
+          >
             <div className="text-lg font-medium">About</div>
           </a>
-          <a href="#contact" className="text-black dark:text-white hover:text-teal-600">
+          <a
+            href="#contact"
+            className="text-black dark:text-white hover:text-teal-600"
+          >
             <div className="text-lg font-medium">Contact</div>
           </a>
         </div>
@@ -39,11 +71,16 @@ export default function Landing() {
           </button>
           <button
             onClick={() => navigate("organization/signup")}
-            className="text-lg font-medium w-28 h-12 border justify-center items-center inline-flex cursor-pointer"
+            className="text-lg font-medium w-28 h-12 border justify-center items-center inline-flex cursor-pointer dark:border-white border-black"
           >
             Sign Up
           </button>
-          
+          <button
+            onClick={handleSwitch}
+            className="text-lg font-medium items-center inline-flex cursor-pointer self-end border dark:border-white border-black h-12 w-12 justify-center items-center"
+          >
+            {theme === "dark" ? <HiMoon size={30} /> : <HiSun size={30} />}
+          </button>
         </div>
       </div>
       <div className="flex justify-between py-20 items-center bg-hero bg-cover bg-center">
@@ -55,7 +92,9 @@ export default function Landing() {
           </p>
           <p className="text-base font-medium">
             A specialized voting platform based on{" "}
-            <span className="dark:text-neutral-600 text-teal-600 font-extrabold">blockchain</span>{" "}
+            <span className="dark:text-neutral-600 text-teal-600 font-extrabold">
+              blockchain
+            </span>{" "}
             designed for Voters and Candidates, facilitating a smooth electoral
             process across multiple <br />
             channels.
@@ -64,7 +103,11 @@ export default function Landing() {
             <p className="text-white text-base font-bold">Get Started</p>
           </div>
         </div>
-        <img src={WEB_IMAGE} alt="web" className="w-[550px] h-[550px] decoration-black" />
+        <img
+          src={WEB_IMAGE}
+          alt="web"
+          className="w-[550px] h-[550px] decoration-black"
+        />
       </div>
 
       <div className="py-16 flex flex-col items-center" id="services">
