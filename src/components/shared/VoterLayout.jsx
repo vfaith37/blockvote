@@ -21,14 +21,14 @@ export default function VoterLayout() {
     <div className="w-full h-screen dark:bg-black dark:text-white bg-white text-black flex flex-col">
        <button
           onClick={handleSwitch}
-          className="text-lg font-medium items-center inline-flex cursor-pointer self-end mt-5 mr-5"
+          className="cursor-pointer self-end mt-5 mr-5"
         >
           {theme === "dark" ? <HiMoon size={30} /> : <HiSun size={30} />}
         </button>
-      <div className="flex flex-col items-center mt-[8%]">
+      <div className="flex flex-col items-center">
         <div className="flex">
           <img src={LOGO} alt="blockvote" className="h-4 mr-2 mt-2" />
-          <h1 className="text-xl font-bold mr-auto">blockvote</h1>
+          <h1 className="text-xl font-bold">blockvote</h1>
         </div>
         <div>
           <Outlet />

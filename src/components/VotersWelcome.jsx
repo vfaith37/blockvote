@@ -8,7 +8,7 @@ import { Data } from "../data/dummydata";
 export function VotersWelcome() {
   const navigate = useNavigate();
   return (
-    <div className="mt-[220px] flex flex-col items-center">
+    <div className="flex flex-col items-center">
       <p className="font-bold text-[77px]">Welcome James</p>
       <p className="text-neutral-500 text-[35px] font-normal">
         Let's walk you through the voting process
