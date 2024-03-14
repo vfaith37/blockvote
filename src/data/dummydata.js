@@ -63,19 +63,28 @@ export const CANDIDATE_DATA = [
 
 export const ELECTION_DATA = [
   {
-    title: "BUSA",
+    id: "#43565",
+    association: "BUSA",
     type: "General Election",
+    title: "General Election",
     status: "Ongoing",
+    duration: "March 01 - March 07"
   },
   {
-    title: "BUCC",
+    id: "#43567",
+    association: "BUCC",
     type: "Senatorial Election",
+    title: "Senatorial Election",
     status: "Pending",
+    duration: "March 10- March 17"
   },
   {
-    title: "BUNSA",
+    id: "#43568",
+    association: "BUNSA",
     type: "General Election",
+    title: "General Election",
     status: "Concluded",
+    duration: "March 21 - March 26"
   },
 ];
 
