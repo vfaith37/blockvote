@@ -88,3 +88,21 @@ export const candidateSchema = yup.object().shape({
           !value || (value && SUPPORTED_FORMATS.includes(value?.type))
     ),
 });
+
+export const electionSchema = yup.object().shape({
+  electionname: yup
+    .string()
+    .trim()
+    .min(3, "Invalid Name")
+    .required("First Name required!"),
+  electiontype: yup
+    .string()
+    .trim()
+    .min(3, "Invalid Type")
+    .required("Election Type required!"),
+  description: yup
+    .string()
+    .trim()
+    .min(3, "Mininimum of 3 characters")
+    .required("Description required!"),
+});

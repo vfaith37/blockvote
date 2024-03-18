@@ -23,16 +23,16 @@ export default function Sidebar() {
         <img src={LOGO} alt="metamask" className="h-4" />
         <h1 className="text-xl font-bold mr-auto">blockvote</h1>
       </div>
-      <div className="flex flex-1 flex-col gap-3 py-8">
+      <div className="flex flex-1 flex-col gap-3 py-8 ">
       <p className="text-neutral-500 text-sm font-medium tracking-wide pb-2">Dashboard</p>
 				{DASHBOARD_SIDEBAR_LINKS.map((link) => (
 					<SidebarLink key={link.key} link={link} />
 				))}
 			</div>
 			<div className="flex flex-col gap-0.5 pt-2 border-t border-neutral-700">
-				{DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((link) => (
+				{/* {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((link) => (
 					<SidebarLink key={link.key} link={link} />
-				))}
+				))} */}
 				<button className={classNames(linkClass, 'cursor-pointer text-red-500 text-xl')} onClick={Logout}>
 						<HiOutlineLogout />
 					Logout
@@ -49,7 +49,7 @@ function SidebarLink({ link }) {
 	return (
 		<Link
 			to={link.path}
-			className={classNames(pathname === link.path ? 'bg-neutral-700 text-white' : 'text-neutral-400', linkClass)}
+			className={classNames(pathname === link.path ? 'bg-[#151515] text-white' : 'text-neutral-400', linkClass)}
 		>
 			<span className="text-xl">{link.icon}</span>
 			{link.label}

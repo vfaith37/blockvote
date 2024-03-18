@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import {
   HiOutlineDocumentText,
@@ -7,43 +7,26 @@ import {
   HiOutlineUserAdd,
   HiOutlineViewGrid,
 } from "react-icons/hi";
-import { CANDIDATE_DATA, ELECTION_DATA } from "../data/dummydata";
+import {ELECTION_DATA } from "../data/dummydata";
 import Modal from "./Modal";
-import Papa from "papaparse";
 import { useFormik } from "formik";
-import { candidateSchema } from "../schemas";
+import { candidateSchema, electionSchema } from "../schemas";
 import classNames from "classnames";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { HiOutlineClock } from "react-icons/hi";
 
 const inputStyles =
   "bg-transparent border-b border-white w-[340px] h-10 text-white";
 
 export default function Create() {
   const [open, setOpen] = useState(false);
-  const [csvData, setCsvData] = useState(null);
-  const [jsonData, setJsonData] = useState(null);
-  const csv = useRef(null);
-
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-
-    Papa.parse(file, {
-      complete: (result) => {
-        // let data = result.data
-        const headers = result.data[0];
-        const data = result.data.slice(1);
-        const jsonData = data.map((row) => {
-          return headers.reduce((obj, header, index) => {
-            obj[header] = row[index];
-            return obj;
-          }, {});
-        });
-        console.log(jsonData);
-      },
-    });
-  };
-
+  const [selectedStartDateTime, setSelectedStartDateTime] = useState(null);
+  const [selectedStopDateTime, setSelectedStopDateTime] = useState(null);
+ 
   const onSubmit = async (values, actions) => {
     try {
+      console.log(values);
     } catch (error) {
     } finally {
       onClose();
@@ -51,6 +34,15 @@ export default function Create() {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     actions.resetForm();
+  };
+
+  const handleStartDateChange = (date) => {
+    setSelectedStartDateTime(date);
+    setFieldValue("starttime", date)
+  };
+  const handleStopDateChange = (date) => {
+    setSelectedStopDateTime(date);
+    setFieldValue("stoptime", date)
   };
 
   const {
@@ -61,14 +53,17 @@ export default function Create() {
     handleBlur,
     handleChange,
     handleSubmit,
+    setFieldValue
   } = useFormik({
     initialValues: {
       electionname: "",
       electiontype: "",
       description: "",
+      starttime: null,
+      stoptime: null,
       photo: null,
     },
-    validationSchema: candidateSchema,
+    validationSchema: electionSchema,
     onSubmit,
     enableReinitialize: true,
   });
@@ -154,6 +149,31 @@ export default function Create() {
                             : ""
                         )}
                       />
+                    </div>
+                    <div className="flex gap-2 w-[340px] my-5">
+                      <div className="flex items-center gap-3">
+                        {/* <h1>From</h1> */}
+                        <HiOutlineClock size={20} />
+                        <DatePicker
+                          selected={selectedStartDateTime}
+                          onChange={handleStartDateChange}
+                          showTimeSelect
+                          placeholderText="From"
+                          dateFormat="MMMM d, yyyy h:mm aa"
+                          className="bg-transparent border-b border-white w-[150px] h-10 text-white"
+                        />
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <HiOutlineClock size={20} />
+                        <DatePicker
+                          selected={selectedStopDateTime}
+                          onChange={handleStopDateChange}
+                          showTimeSelect
+                          placeholderText="To"
+                          dateFormat="MMMM d, yyyy h:mm aa"
+                          className="bg-transparent border-b border-white w-[150px] h-10 text-white"
+                        />
+                      </div>
                     </div>
                     <div className="flex justify-between text-[13px]">
                       {errors.description && touched.description && (

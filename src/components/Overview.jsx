@@ -1,7 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { HiOutlineSave } from "react-icons/hi";
-import { ELECTION_DATA } from "../data/dummydata";
+import { CANDIDATE_DATA, ELECTION_DATA } from "../data/dummydata";
 import classNames from "classnames";
 import BarChart from "./Chart";
 
@@ -30,11 +30,55 @@ export default function Overview() {
       </div>
 
       <div className="grid grid-cols-2 gap-7">
-        <div className="rounded-lg bg-neutral-600 px-10 py-10">
+        <div className="rounded-lg bg-[#151515] px-10 py-10">
           <p className="text-white text-xl font-bold">Votes</p>
+          <table className="table-fixed w-full h-full hover:text-gray-100">
+            <thead className="bg-transparent">
+              <tr>
+                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  ID
+                </th>
+                <th className="border-0  px-6 text-stone-600 text-base font-medium">
+                  Name
+                </th>
+                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  Time
+                </th>
+                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  Date
+                </th>
+                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  Process
+                </th>
+              </tr>
+            </thead>
+            {CANDIDATE_DATA.map((item) => {
+              return (
+                <tbody key={item.id} className="bg-transparent border-0">
+                  <tr>
+                    <td className="border-0 items-center align-middle text-white text-sm font-medium">
+                      {item.id}
+                    </td>
+                    <td className="border-0  px-6 align-middle text-white text-sm font-medium">
+                      {item.firstname} {item.lastname}
+                    </td>
+                    <td className="border-0 px-6 align-middle text-white text-sm font-medium">
+                      {item.position}
+                    </td>
+                    <td className="border-0 px-6 align-middle text-white text-sm font-medium"></td>
+                    <td className="border-0 px-6 align-middle">
+                      <div className="bg-transparent border-red-600 border items-center flex justify-center text-red-600 rounded-lg w-16 h-8 text-xs font-medium gap-1">
+                      Voted
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
+          </table>
         </div>
         <div className="grid grid-rows-2 gap-7">
-          <div className="rounded-lg bg-neutral-600 px-10 py-10">
+          <div className="rounded-lg bg-[#151515] px-10 py-10">
             <p className="text-white text-xl font-bold">Elections</p>
             {ELECTION_DATA.map((item) => {
               return (
@@ -58,7 +102,7 @@ export default function Overview() {
               );
             })}
           </div>
-          <div className="rounded-lg bg-neutral-600 px-10 py-10">
+          <div className="rounded-lg bg-[#151515] px-10 py-10">
             <div className="flex justify-between">
               <p className="text-white text-xl font-bold">
                 Candidate Performance
@@ -67,6 +111,38 @@ export default function Overview() {
                 See all
               </button>
             </div>
+            <table className="table-fixed w-full h-full hover:text-gray-100">
+              <thead className="bg-transparent">
+                <tr>
+                  <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                    Name
+                  </th>
+                  <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                    Position
+                  </th>
+                  <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                    Vote
+                  </th>
+                </tr>
+              </thead>
+              {CANDIDATE_DATA.map((item) => {
+                return (
+                  <tbody key={item.id} className="bg-transparent border-0">
+                    <tr>
+                      <td className="border-0 px-6 align-middle text-white text-sm font-medium">
+                        {item.lastname} {item.firstname}
+                      </td>
+                      <td className="border-0 px-6 align-middle text-white text-sm font-medium">
+                        {item.position}
+                      </td>
+                      <td className="border-0 items-center align-middle text-white text-sm font-medium">
+                        {item.id}
+                      </td>
+                    </tr>
+                  </tbody>
+                );
+              })}
+            </table>
           </div>
         </div>
       </div>
