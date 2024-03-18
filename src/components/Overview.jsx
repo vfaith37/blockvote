@@ -86,9 +86,9 @@ export default function Overview() {
                   className={classNames(
                     item.status === "Ongoing"
                       ? "bg-green-700"
-                      : "bg-red-700" || item.status === "Pending"
-                      ? "bg-red-700"
-                      : "bg-teal-600",
+                      :  item.status === "Pending"
+                      ? "bg-teal-600"
+                      : "bg-red-700",
                     "w-[95%] h-20 px-5 py-3 my-4 rounded-lg justify-between flex items-center"
                   )}
                 >

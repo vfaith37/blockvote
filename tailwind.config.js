@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'hero': "url('./assets/Jobby.svg')"
+        'hero': "url('./assets/Jobby.svg')",
+        'heroq': "url('./assets/Jobby.svg')"
       }
     },
   },
