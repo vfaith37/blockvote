@@ -2,7 +2,7 @@ import React from "react";
 import LOGO from "../../assets/logo.png";
 import classNames from 'classnames'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { DASHBOARD_SIDEBAR_BOTTOM_LINKS, DASHBOARD_SIDEBAR_LINKS } from "../../lib/const/navigation";
+import { DASHBOARD_SIDEBAR_LINKS } from "../../lib/const/navigation";
 import { HiOutlineLogout } from 'react-icons/hi'
 
 const linkClass =

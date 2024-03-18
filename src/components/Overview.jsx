@@ -4,12 +4,13 @@ import { HiOutlineSave } from "react-icons/hi";
 import { CANDIDATE_DATA, ELECTION_DATA } from "../data/dummydata";
 import classNames from "classnames";
 import BarChart from "./Chart";
+import { generatePDF } from "./PDFGenerator";
 
 export default function Overview() {
   const today = new Date();
   const formattedDate = format(today, "EEE dd MMM, yyy");
   return (
-    <div className="text-white">
+    <div className="text-white" id="pdf-content">
       <div className="flex justify-between items-center">
         <div className="flex flex-col">
           <p className="text-sm text-neutral-500 tracking-tight font-normal">
@@ -17,12 +18,10 @@ export default function Overview() {
           </p>
           <h1 className="text-3xl font-medium tracking-tight">Overview</h1>
         </div>
-        <div className="gap-2 flex w-28 h-10 justify-center bg-teal-600 rounded items-center">
-          <p className="items-center justify-center font-medium text-base">
-            Export
-          </p>
+        <button onClick={generatePDF} className="font-medium text-base gap-2 flex w-28 h-10 justify-center bg-teal-600 rounded items-center">
+          Export
           <HiOutlineSave fontSize={18} />
-        </div>
+        </button>
       </div>
 
       <div className="my-10 border border-white rounded-xl p-6">
@@ -68,7 +67,7 @@ export default function Overview() {
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium"></td>
                     <td className="border-0 px-6 align-middle">
                       <div className="bg-transparent border-red-600 border items-center flex justify-center text-red-600 rounded-lg w-16 h-8 text-xs font-medium gap-1">
-                      Voted
+                        Voted
                       </div>
                     </td>
                   </tr>

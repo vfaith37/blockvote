@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
-// import PROFILE_IMAGE from "../assets/profile.jpg";
 import { CANDIDATE_DATA } from "../data/dummydata";
-import { HiOutlineSave, HiOutlineTrash } from "react-icons/hi";
+import { HiOutlineCheck, HiOutlineSave, HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
 import Modal from "./Modal";
 import Papa from "papaparse";
@@ -15,8 +14,6 @@ const inputStyles =
 
 export default function Candidates() {
   const [open, setOpen] = useState(false);
-  const [csvData, setCsvData] = useState(null);
-  const [jsonData, setJsonData] = useState(null);
   const csv = useRef(null);
 
   const [base64Image, setBase64Image] = useState("");
@@ -43,7 +40,7 @@ export default function Candidates() {
       console.log(1, data);
     } catch (error) {
     } finally {
-      onClose()
+      onClose();
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -70,18 +67,18 @@ export default function Candidates() {
     onSubmit,
     enableReinitialize: true,
   });
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   const reader = new FileReader();
 
-    reader.onloadend = () => {
-      setFieldValue("photo", reader.result);
-    };
+  //   reader.onloadend = () => {
+  //     setFieldValue("photo", reader.result);
+  //   };
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -103,8 +100,8 @@ export default function Candidates() {
   };
 
   const onClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
   return (
     <div className="text-white w-full flex-grow relative">
       <div className="w-full h-full my-16 border border-white rounded-lg items-center pl-12 py-7">
@@ -321,6 +318,10 @@ export default function Candidates() {
               );
             })}
           </table>
+          <button className="flex gap-2 h-8 w-24 bg-green-900 rounded-lg items-center justify-center text-sm font-normal self-end mx-28 my-10">
+            Done
+            <HiOutlineCheck size={20} />
+          </button>
         </div>
       </div>
     </div>

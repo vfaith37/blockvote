@@ -10,7 +10,7 @@ import {
 import {ELECTION_DATA } from "../data/dummydata";
 import Modal from "./Modal";
 import { useFormik } from "formik";
-import { candidateSchema, electionSchema } from "../schemas";
+import { electionSchema } from "../schemas";
 import classNames from "classnames";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
