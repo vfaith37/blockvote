@@ -90,12 +90,12 @@ export const candidateSchema = yup.object().shape({
 });
 
 export const electionSchema = yup.object().shape({
-  electionname: yup
+  name: yup
     .string()
     .trim()
     .min(3, "Invalid Name")
     .required("First Name required!"),
-  electiontype: yup
+  type: yup
     .string()
     .trim()
     .min(3, "Invalid Type")

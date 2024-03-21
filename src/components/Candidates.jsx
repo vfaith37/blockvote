@@ -8,6 +8,7 @@ import { candidateSchema } from "../schemas";
 import { useFormik } from "formik";
 import classNames from "classnames";
 import PreviewImage from "./PreviewImage";
+import client from "../api/client";
 
 const inputStyles =
   "w-[350px] h-11 text-white py-2 my-2 bg-transparent rounded-md border border-white pl-2";
@@ -15,7 +16,7 @@ const inputStyles =
 export default function Candidates() {
   const [open, setOpen] = useState(false);
   const csv = useRef(null);
-
+  const [loading, setLoading] = useState(false);
   const [base64Image, setBase64Image] = useState("");
   const fileRef = useRef(null);
   const onSubmit = async (values, actions) => {
@@ -67,34 +68,41 @@ export default function Candidates() {
     onSubmit,
     enableReinitialize: true,
   });
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   const reader = new FileReader();
-
-  //   reader.onloadend = () => {
-  //     setFieldValue("photo", reader.result);
-  //   };
-
-  //   if (file) {
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-
+    setLoading(true);
     Papa.parse(file, {
       complete: (result) => {
-        // let data = result.data
-        const headers = result.data[0];
-        const data = result.data.slice(1);
-        const jsonData = data.map((row) => {
-          return headers.reduce((obj, header, index) => {
-            obj[header] = row[index];
-            return obj;
-          }, {});
-        });
-        console.log(jsonData);
+        const csvData = result.data;
+        if (csvData && csvData.length > 1) {
+          const headers = csvData[0];
+          const data = csvData.slice(1);
+          const jsonData = data.map((row) => {
+            return headers.reduce((obj, header, index) => {
+              obj[header] = row[index];
+              return obj;
+            }, {});
+          });
+          console.log(jsonData);
+
+          // Post JSON data using Axios
+          try {
+            client
+              .post("/candidate/populateCandidate", jsonData)
+              .then((response) => {
+                console.log("Post successful:", response.data);
+                // You can add more logic here if needed
+              })
+              .catch((error) => {
+                console.error("Post error:", error);
+              });
+          } catch (error) {
+            console.error("Axios error:", error);
+            setLoading(false);
+          } finally {
+            setLoading(false);
+          }
+        }
       },
     });
   };
@@ -120,9 +128,16 @@ export default function Candidates() {
               onClick={() => {
                 csv.current.click();
               }}
+              disabled={loading}
               className="flex gap-2 h-8 w-32 bg-green-900 rounded-lg items-center justify-center text-sm font-normal"
             >
-              Upload CSV <HiOutlineSave />
+              {loading === true ? (
+                "loading"
+              ) : (
+                <>
+                  Upload CSV <HiOutlineSave />
+                </>
+              )}
             </button>
 
             <button

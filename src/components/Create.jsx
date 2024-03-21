@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import {
   HiOutlineDocumentText,
@@ -7,7 +7,7 @@ import {
   HiOutlineUserAdd,
   HiOutlineViewGrid,
 } from "react-icons/hi";
-import {ELECTION_DATA } from "../data/dummydata";
+import { ELECTION_DATA } from "../data/dummydata";
 import Modal from "./Modal";
 import { useFormik } from "formik";
 import { electionSchema } from "../schemas";
@@ -15,6 +15,8 @@ import classNames from "classnames";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { HiOutlineClock } from "react-icons/hi";
+import client from "../api/client";
+import { format } from "date-fns";
 
 const inputStyles =
   "bg-transparent border-b border-white w-[340px] h-10 text-white";
@@ -23,27 +25,75 @@ export default function Create() {
   const [open, setOpen] = useState(false);
   const [selectedStartDateTime, setSelectedStartDateTime] = useState(null);
   const [selectedStopDateTime, setSelectedStopDateTime] = useState(null);
- 
+  const [electionData, setElectionData] = useState([]);
+
+  const myHeaders = {
+    "Content-Type": "application/json",
+  };
+
+  const requestOptions = {
+    headers: myHeaders,
+  };
   const onSubmit = async (values, actions) => {
     try {
       console.log(values);
+      const res = await client.post(
+        "/election/createElection",
+        {
+          ...values,
+        },
+        requestOptions
+      );
+      if (res.status === 200) {
+        try {
+          const res = await client.get("/election/getElection", requestOptions);
+          if (res.status === 200) {
+            localStorage.setItem("electionData", JSON.stringify(res.data.data));
+          }
+        } catch (error) {
+        } finally {
+          const data = localStorage.getItem("electionData");
+          if (data) {
+            const parseData = JSON.parse(data);
+            setElectionData(parseData);
+          }
+        }
+      }
     } catch (error) {
     } finally {
-      onClose();
+      // onClose();
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
+    // actions.resetForm();
   };
-
   const handleStartDateChange = (date) => {
     setSelectedStartDateTime(date);
-    setFieldValue("starttime", date)
+    setFieldValue("from", date);
   };
   const handleStopDateChange = (date) => {
     setSelectedStopDateTime(date);
-    setFieldValue("stoptime", date)
+    setFieldValue("to", date);
   };
+
+  useEffect(() => {
+    const getAllElections = async () => {
+      try {
+        const res = await client.get("/election/getElection", requestOptions);
+        if (res.status === 200) {
+          localStorage.setItem("electionData", JSON.stringify(res.data.data));
+        }
+      } catch (error) {
+      } finally {
+        const data = localStorage.getItem("electionData");
+        if (data) {
+          const parseData = JSON.parse(data);
+          setElectionData(parseData);
+        }
+      }
+    };
+    getAllElections();
+  }, []);
 
   const {
     values,
@@ -53,15 +103,14 @@ export default function Create() {
     handleBlur,
     handleChange,
     handleSubmit,
-    setFieldValue
+    setFieldValue,
   } = useFormik({
     initialValues: {
-      electionname: "",
-      electiontype: "",
+      name: "",
+      type: "",
       description: "",
-      starttime: null,
-      stoptime: null,
-      photo: null,
+      from: "",
+      to: "",
     },
     validationSchema: electionSchema,
     onSubmit,
@@ -70,6 +119,7 @@ export default function Create() {
   const onClose = () => {
     setOpen(false);
   };
+  console.log(1, electionData);
   return (
     <div className="text-white w-full flex-grow relative">
       <div className="w-full h-full my-16 border border-white rounded-lg items-center pl-12 py-7">
@@ -100,53 +150,45 @@ export default function Create() {
                 <form onSubmit={handleSubmit} autoComplete="off">
                   <div className="w-full flex flex-col pt-2">
                     <div className="flex text-[13px]">
-                      {errors.electionname && touched.electionname && (
-                        <p className="error text-red-600">
-                          {errors.electionname}
-                        </p>
+                      {errors.name && touched.name && (
+                        <p className="error text-red-600">{errors.name}</p>
                       )}
                     </div>
                     <div className="flex gap-3 h-9 items-center my-5">
                       <HiOutlineViewGrid size={20} />
                       <input
                         type="text"
-                        id="electionname"
+                        id="name"
                         className={classNames(
                           inputStyles,
-                          errors.electionname && touched.electionname
-                            ? "input-error"
-                            : ""
+                          errors.name && touched.name ? "input-error" : ""
                         )}
                         placeholder="Election Name"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.electionname}
+                        value={values.name}
                       />
                     </div>
                     <div className="flex justify-between text-[13px]">
                       <p className="text-violet-500 text-xs font-semibold font-['Urbanist']">
                         optional
                       </p>
-                      {errors.electiontype && touched.electiontype && (
-                        <p className="error text-red-600">
-                          {errors.electiontype}
-                        </p>
+                      {errors.type && touched.type && (
+                        <p className="error text-red-600">{errors.type}</p>
                       )}
                     </div>
                     <div className="flex gap-3 h-9 items-center my-5">
                       <HiOutlineUserAdd size={20} />
                       <input
-                        id="electiontype"
+                        id="type"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.electiontype}
+                        value={values.type}
                         type="text"
                         placeholder="Election Type"
                         className={classNames(
                           inputStyles,
-                          errors.electiontype && touched.electiontype
-                            ? "input-error"
-                            : ""
+                          errors.type && touched.type ? "input-error" : ""
                         )}
                       />
                     </div>
@@ -238,28 +280,28 @@ export default function Create() {
                   Duration
                 </th>
                 <th className="border-0 px-6 text-stone-600 text-base font-medium">
-                  Association
+                  Description
                 </th>
                 <th className="border-0 px-6 text-stone-600 text-base font-medium">
                   Action
                 </th>
               </tr>
             </thead>
-            {ELECTION_DATA.map((item) => {
+            {electionData.map((item) => {
               return (
-                <tbody key={item.id} className="bg-transparent border-0">
+                <tbody key={item._id} className="bg-transparent border-0">
                   <tr>
                     <td className="border-0 items-center align-middle text-white text-sm font-medium">
-                      {item.id}
+                      {item._id}
                     </td>
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium">
-                      {item.title}
+                      {item.name}
                     </td>
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium">
-                      {item.duration}
+                      {format(new Date(item.from), 'MMMM dd')}-{format(new Date(item.to), 'MMMM dd')}
                     </td>
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium">
-                      {item.association}
+                      {item.description}
                     </td>
                     <td className="border-0 px-6 align-middle">
                       <div className="flex gap-3">

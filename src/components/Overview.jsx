@@ -7,6 +7,7 @@ import BarChart from "./Chart";
 import { generatePDF } from "./PDFGenerator";
 
 export default function Overview() {
+  
   const today = new Date();
   const formattedDate = format(today, "EEE dd MMM, yyy");
   return (

@@ -61,6 +61,7 @@ export const CANDIDATE_DATA = [
   },
 ];
 
+
 export const ELECTION_DATA = [
   {
     id: "#43565",
