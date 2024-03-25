@@ -40,7 +40,7 @@ export const CANDIDATE_DATA = [
     position: "President",
   },
   {
-    id: "#46465",
+    id: "#46460",
     email: "afolabi@gmail.com",
     firstname: "Heritage",
     lastname: "Afolabi",

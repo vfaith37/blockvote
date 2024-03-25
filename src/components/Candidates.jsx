@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CANDIDATE_DATA } from "../data/dummydata";
 import { HiOutlineCheck, HiOutlineSave, HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
@@ -17,29 +17,54 @@ export default function Candidates() {
   const [open, setOpen] = useState(false);
   const csv = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [base64Image, setBase64Image] = useState("");
+  const [candidateData, setCandidateData] = useState([]);
+  const [candidateToDelete, setCandidateToDelete] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const fileRef = useRef(null);
+  const electionId = localStorage.getItem("electionId");
+  const refreshToken = localStorage.getItem("refreshToken");
+  const myHeaders = {
+    "Content-Type": "application/json",
+  };
+
+  const requestOptions = {
+    headers: myHeaders,
+  };
+
   const onSubmit = async (values, actions) => {
+    const myHeader = {
+      Cookie: `refreshToken=${refreshToken}`,
+      "Content-Type": "multipart/form-data", // Set Content-Type for FormData
+    };
+
+    const axiosConfig = {
+      headers: myHeader,
+    };
     try {
-      const file = values.photo;
-      const reader = new FileReader();
+      const formData = new FormData();
+      formData.append("firstname", values.firstname);
+      formData.append("lastname", values.lastname);
+      formData.append("position", values.position);
+      formData.append("image", values.image);
 
-      reader.onloadend = () => {
-        setBase64Image(reader.result);
-      };
-
-      if (file) {
-        reader.readAsDataURL(file);
+      const response = await client.post(
+        `/candidate/addNewCandidate/${electionId}`,
+        formData,
+        axiosConfig
+      );
+      if (response.status === 200) {
+        try {
+          const res = await client.get(
+            `candidate/getAllCandidates/${electionId}`,
+            requestOptions
+          );
+          if (res.status === 200) {
+            setCandidateData(res.data.data);
+          }
+        } catch (error) {}
       }
-
-      const data = {
-        firstname: values.firstname,
-        lastname: values.lastname,
-        position: values.position,
-        photo: base64Image,
-      };
-      console.log(1, data);
     } catch (error) {
+      console.error(error);
     } finally {
       onClose();
     }
@@ -47,6 +72,21 @@ export default function Candidates() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     actions.resetForm();
   };
+
+  useEffect(() => {
+    const getAllElections = async () => {
+      try {
+        const res = await client.get(
+          `candidate/getAllCandidates/${electionId}`,
+          requestOptions
+        );
+        if (res.status === 200) {
+          setCandidateData(res.data.data);
+        }
+      } catch (error) {}
+    };
+    getAllElections();
+  }, []);
 
   const {
     values,
@@ -62,9 +102,9 @@ export default function Candidates() {
       firstname: "",
       lastname: "",
       position: "",
-      photo: null,
+      image: null,
     },
-    validationSchema: candidateSchema,
+    // validationSchema: candidateSchema,
     onSubmit,
     enableReinitialize: true,
   });
@@ -83,28 +123,67 @@ export default function Candidates() {
               return obj;
             }, {});
           });
-          console.log(jsonData);
-
+          const transformedObject = {
+            "candidateArray": jsonData
+          };
+          console.log(transformedObject);
           // Post JSON data using Axios
-          try {
-            client
-              .post("/candidate/populateCandidate", jsonData)
-              .then((response) => {
-                console.log("Post successful:", response.data);
-                // You can add more logic here if needed
-              })
-              .catch((error) => {
-                console.error("Post error:", error);
-              });
-          } catch (error) {
-            console.error("Axios error:", error);
-            setLoading(false);
-          } finally {
-            setLoading(false);
-          }
+          const postCandidate = async () => {
+            try {
+              const response = await client.post(
+                `/candidate/uploadCandidates/${electionId}`,
+                transformedObject
+              );
+              console.log("Post successful:", response.data);
+
+              if (response.status === 200) {
+                try {
+                  const res = await client.get(
+                    `candidate/getAllCandidates/${electionId}`,
+                    requestOptions
+                  );
+                  if (res.status === 200) {
+                    setCandidateData(res.data.data);
+                  }
+                } catch (error) {
+                  console.error("Error fetching candidates:", error);
+                }
+              }
+            } catch (error) {
+              console.error("Post error:", error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          postCandidate();
         }
       },
     });
+  };
+
+  const handleDeleteCandidate = (id) => {
+    setCandidateToDelete(id);
+    setShowConfirmation(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await client.delete(
+        `/candidate/deleteCandidate/${candidateToDelete}/${electionId}`,
+        requestOptions
+      );
+      if (response.status === 200) {
+        // Update candidate data after deletion
+        const updatedCandidates = candidateData.filter(
+          (candidate) => candidate._id !== candidateToDelete
+        );
+        setCandidateData(updatedCandidates);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+    } finally {
+      setShowConfirmation(false);
+    }
   };
 
   const onClose = () => {
@@ -208,9 +287,9 @@ export default function Candidates() {
                         errors.position && touched.position ? "input-error" : ""
                       )}
                     />
-                    {values.photo && (
+                    {values.image && (
                       <PreviewImage
-                        file={values.photo}
+                        file={values.image}
                         classnames={"w-[100px] h-[100px]"}
                       />
                     )}
@@ -232,16 +311,16 @@ export default function Candidates() {
                     <input
                       hidden
                       ref={fileRef}
-                      id="photo"
-                      name="photo"
+                      id="image"
+                      name="image"
                       type="file"
                       onChange={(event) => {
-                        setFieldValue("photo", event.target.files[0]);
+                        setFieldValue("image", event.target.files[0]);
                       }}
                       // onBlur={handleBlur}
                       className={classNames(
                         inputStyles,
-                        errors.photo && touched.photo ? "input-error" : ""
+                        errors.image && touched.image ? "input-error" : ""
                       )}
                     />
                   </div>
@@ -293,12 +372,12 @@ export default function Candidates() {
                 </th>
               </tr>
             </thead>
-            {CANDIDATE_DATA.map((item) => {
+            {candidateData.map((item) => {
               return (
                 <tbody key={item.id} className="bg-transparent border-0">
                   <tr>
                     <td className="border-0 items-center align-middle text-white text-sm font-medium">
-                      {item.id}
+                      {item._id}
                     </td>
                     <td className="border-0 px-6 align-middle">
                       <img
@@ -322,7 +401,10 @@ export default function Candidates() {
                           Edit
                           <FaEdit />
                         </button>
-                        <button className="bg-red-600 items-center flex justify-center text-gray-50 rounded-lg w-16 h-8 text-xs font-medium gap-1">
+                        <button
+                          onClick={() => handleDeleteCandidate(item._id)}
+                          className="bg-red-600 items-center flex justify-center text-gray-50 rounded-lg w-16 h-8 text-xs font-medium gap-1"
+                        >
                           Delete
                           <HiOutlineTrash />
                         </button>
@@ -333,6 +415,33 @@ export default function Candidates() {
               );
             })}
           </table>
+          {showConfirmation && (
+            <Modal>
+              <div className="w-full flex flex-col justify-center items-center">
+                <div className="mt-10 text-3xl font-bold">Delete</div>
+                <p className="text-xl mt-4 font-normal">
+                  Are you sure you want to delete?
+                </p>
+                <p className="text-sm mt-4 font-normal text-neutral-500">
+                  All election data will be lost.
+                </p>
+                <div className="flex justify-between my-4 gap-4">
+                  <button
+                    onClick={() => setShowConfirmation(false)}
+                    className="bg-gray-600 text-white rounded-lg px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-red-600 text-white rounded-lg px-4 py-2"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          )}
           <button className="flex gap-2 h-8 w-24 bg-green-900 rounded-lg items-center justify-center text-sm font-normal self-end mx-28 my-10">
             Done
             <HiOutlineCheck size={20} />

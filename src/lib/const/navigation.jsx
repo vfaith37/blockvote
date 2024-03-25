@@ -21,6 +21,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		icon: <HiOutlineCalendar />
 	},
 	{
+		key: 'voters',
+		label: 'Voters',
+		path: '/dashboard/voters',
+		icon: <HiOutlineCalendar />
+	},
+	{
 		key: 'candidate',
 		label: 'Candidate',
 		path: '/dashboard/candidate',

@@ -77,16 +77,28 @@ export const candidateSchema = yup.object().shape({
     .test(
       "FILE_SIZE",
       "Uploaded file too big.",
-      (value) => !value || (value && value.size <= 1024 * 1024)
+      (value) => !value || (value && value.size <= 20 * 1024 * 1024) // 20MB limit
     )
     .test(
       "is-valid-size",
-      "Max allowed size is 100KB",
+      "Max allowed size is 20MB",
       (value) =>
-        // value && value.size <= MAX_FILE_SIZE
-        (value) =>
-          !value || (value && SUPPORTED_FORMATS.includes(value?.type))
+        !value || (value && SUPPORTED_FORMATS.image.includes(value.type))
     ),
+});
+
+export const voterSchema = yup.object().shape({
+  firstname: yup
+    .string()
+    .trim()
+    .min(3, "Invalid Name")
+    .required("First Name required!"),
+  lastname: yup
+    .string()
+    .trim()
+    .min(3, "Invalid Name")
+    .required("Last Name required!"),
+  email: yup.string().email("Please enter a valid email").required("Required"),
 });
 
 export const electionSchema = yup.object().shape({

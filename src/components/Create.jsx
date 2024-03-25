@@ -7,7 +7,6 @@ import {
   HiOutlineUserAdd,
   HiOutlineViewGrid,
 } from "react-icons/hi";
-import { ELECTION_DATA } from "../data/dummydata";
 import Modal from "./Modal";
 import { useFormik } from "formik";
 import { electionSchema } from "../schemas";
@@ -26,6 +25,12 @@ export default function Create() {
   const [selectedStartDateTime, setSelectedStartDateTime] = useState(null);
   const [selectedStopDateTime, setSelectedStopDateTime] = useState(null);
   const [electionData, setElectionData] = useState([]);
+  const [selectedElection, setSelectedElection] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const orgData = JSON.parse(localStorage.getItem("userInfo"))._id;
+  const electionId = localStorage.getItem("electionId");
+  const [edit, setEdit] = useState(false);
 
   const myHeaders = {
     "Content-Type": "application/json",
@@ -35,38 +40,80 @@ export default function Create() {
     headers: myHeaders,
   };
   const onSubmit = async (values, actions) => {
-    try {
-      console.log(values);
-      const res = await client.post(
-        "/election/createElection",
-        {
-          ...values,
-        },
-        requestOptions
-      );
-      if (res.status === 200) {
-        try {
-          const res = await client.get("/election/getElection", requestOptions);
-          if (res.status === 200) {
-            localStorage.setItem("electionData", JSON.stringify(res.data.data));
-          }
-        } catch (error) {
-        } finally {
-          const data = localStorage.getItem("electionData");
-          if (data) {
-            const parseData = JSON.parse(data);
-            setElectionData(parseData);
+    if (edit === false) {
+      try {
+        const res = await client.post(
+          `/election/createElection/${orgData}`,
+          {
+            ...values,
+          },
+          requestOptions
+        );
+        if (res.status === 200) {
+          try {
+            const res = await client.get(
+              `/election/getOrganizationElections/${orgData}`,
+              requestOptions
+            );
+            if (res.status === 200) {
+              localStorage.setItem(
+                "electionData",
+                JSON.stringify(res.data.data)
+              );
+              localStorage.setItem("electionId", res.data.data[0]._id);
+            }
+          } catch (error) {
+          } finally {
+            const data = localStorage.getItem("electionData");
+            if (data) {
+              const parseData = JSON.parse(data);
+              setElectionData(parseData);
+            }
           }
         }
+      } catch (error) {
+      } finally {
+        onClose();
       }
-    } catch (error) {
-    } finally {
-      // onClose();
+    } else {
+      try {
+        const res = await client.put(
+          `/election/editElectionById/${electionId}`,
+          values,
+          requestOptions
+        );
+        if (res.status === 200) {
+          console.log(res.data);
+          try {
+            const res = await client.get(
+              `/election/getOrganizationElections/${orgData}`,
+              requestOptions
+            );
+            if (res.status === 200) {
+              localStorage.setItem(
+                "electionData",
+                JSON.stringify(res.data.data)
+              );
+              localStorage.setItem("electionId", res.data.data[0]._id);
+            }
+          } catch (error) {
+          } finally {
+            const data = localStorage.getItem("electionData");
+            if (data) {
+              const parseData = JSON.parse(data);
+              setElectionData(parseData);
+            }
+          }
+        }
+      } catch (error) {
+      } finally {
+        onClose();
+      }
     }
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    // actions.resetForm();
+    actions.resetForm();
   };
+
   const handleStartDateChange = (date) => {
     setSelectedStartDateTime(date);
     setFieldValue("from", date);
@@ -76,12 +123,63 @@ export default function Create() {
     setFieldValue("to", date);
   };
 
+  const handleEdit = (election) => {
+    setSelectedElection(election);
+    setEditMode(true);
+    setOpen(true);
+
+    // Set initial form values based on the selected election
+    setFieldValue("name", election.name);
+    setFieldValue("type", election.type);
+    setFieldValue("description", election.description);
+    setSelectedStartDateTime(new Date(election.from));
+    setSelectedStopDateTime(new Date(election.to));
+    setEdit(true);
+    // const data = {
+    //   data: election.name,
+    //   type: election.type,
+    //   description: election.description,
+    //   from: election.from,
+    //   to: election.to,
+    // };
+    // setEditData(data);
+    // console.log(data);
+  };
+
+  const handleDelete = (electionId) => {
+    setShowConfirmation(true);
+    setSelectedElection(electionId);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const res = await client.delete(
+        `election/deleteElectionById/${selectedElection}`,
+        requestOptions
+      );
+      if (res.status === 200) {
+        const updatedElections = electionData.filter(
+          (election) => election._id !== selectedElection
+        );
+        setElectionData(updatedElections);
+        setSelectedElection(null);
+        setShowConfirmation(false);
+      }
+    } catch (error) {
+      console.error("Error deleting election:", error);
+    }
+  };
+
   useEffect(() => {
     const getAllElections = async () => {
       try {
-        const res = await client.get("/election/getElection", requestOptions);
+        const res = await client.get(
+          `/election/getOrganizationElections/${orgData}`,
+          requestOptions
+        );
         if (res.status === 200) {
           localStorage.setItem("electionData", JSON.stringify(res.data.data));
+          localStorage.setItem("electionId", res.data.data[0]._id);
         }
       } catch (error) {
       } finally {
@@ -118,29 +216,23 @@ export default function Create() {
   });
   const onClose = () => {
     setOpen(false);
+    setFieldValue("name", "");
+    setFieldValue("type", "");
+    setFieldValue("description", "");
+    setSelectedStartDateTime("");
+    setSelectedStopDateTime("");
+    setEdit(false);
   };
-  console.log(1, electionData);
   return (
     <div className="text-white w-full flex-grow relative">
       <div className="w-full h-full my-16 border border-white rounded-lg items-center pl-12 py-7">
         <div className="flex flex-col">
-          <div className="flex justify-between">
-            <button
-              // onClick={() => {
-              //   csv.current.click();
-              // }}
-              className="flex gap-2 h-8 w-32 bg-green-900 rounded-lg items-center justify-center text-sm font-normal"
-            >
-              Edit Election <HiOutlineSave />
-            </button>
-
-            <button
-              onClick={() => setOpen(true)}
-              className="flex gap-2 h-8 w-32 bg-green-900 rounded-lg items-center justify-center text-sm font-normal self-end mx-28"
-            >
-              Create Election <HiOutlineSave />
-            </button>
-          </div>
+          <button
+            onClick={() => setOpen(true)}
+            className="flex gap-2 h-8 w-32 bg-green-900 rounded-lg items-center justify-center text-sm font-normal self-end mx-28"
+          >
+            Create Election <HiOutlineSave />
+          </button>
           {open === true ? (
             <Modal>
               <div className="w-full flex flex-col justify-center items-center">
@@ -177,6 +269,7 @@ export default function Create() {
                         <p className="error text-red-600">{errors.type}</p>
                       )}
                     </div>
+
                     <div className="flex gap-3 h-9 items-center my-5">
                       <HiOutlineUserAdd size={20} />
                       <input
@@ -194,7 +287,6 @@ export default function Create() {
                     </div>
                     <div className="flex gap-2 w-[340px] my-5">
                       <div className="flex items-center gap-3">
-                        {/* <h1>From</h1> */}
                         <HiOutlineClock size={20} />
                         <DatePicker
                           selected={selectedStartDateTime}
@@ -250,7 +342,7 @@ export default function Create() {
                         onClick={onClose}
                         className="bg-red-600 items-center flex justify-center text-gray-50 rounded-lg w-16 h-8 text-xs font-medium gap-1"
                       >
-                        Delete
+                        Cancel
                         <HiOutlineTrash />
                       </button>
                       <button
@@ -298,18 +390,25 @@ export default function Create() {
                       {item.name}
                     </td>
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium">
-                      {format(new Date(item.from), 'MMMM dd')}-{format(new Date(item.to), 'MMMM dd')}
+                      {format(new Date(item.from), "MMMM dd")}-
+                      {format(new Date(item.to), "MMMM dd")}
                     </td>
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium">
                       {item.description}
                     </td>
                     <td className="border-0 px-6 align-middle">
                       <div className="flex gap-3">
-                        <button className="bg-teal-600 items-center flex justify-center text-gray-50 rounded-lg w-12 h-8 text-xs font-medium gap-1">
+                        <button
+                          onClick={() => handleEdit(item)}
+                          className="bg-teal-600 items-center flex justify-center text-gray-50 rounded-lg w-12 h-8 text-xs font-medium gap-1"
+                        >
                           Edit
                           <FaEdit />
                         </button>
-                        <button className="bg-red-600 items-center flex justify-center text-gray-50 rounded-lg w-16 h-8 text-xs font-medium gap-1">
+                        <button
+                          onClick={() => handleDelete(item._id)}
+                          className="bg-red-600 items-center flex justify-center text-gray-50 rounded-lg w-16 h-8 text-xs font-medium gap-1"
+                        >
                           Delete
                           <HiOutlineTrash />
                         </button>
@@ -320,6 +419,33 @@ export default function Create() {
               );
             })}
           </table>
+          {showConfirmation && (
+            <Modal>
+              <div className="w-full flex flex-col justify-center items-center">
+                <div className="mt-10 text-3xl font-bold">Delete</div>
+                <p className="text-xl mt-4 font-normal">
+                  Are you sure you want to delete?
+                </p>
+                <p className="text-sm mt-4 font-normal text-neutral-500">
+                  All election data will be lost.
+                </p>
+                <div className="flex justify-between my-4 gap-4">
+                  <button
+                    onClick={() => setShowConfirmation(false)}
+                    className="bg-gray-600 text-white rounded-lg px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-red-600 text-white rounded-lg px-4 py-2"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          )}
         </div>
       </div>
     </div>

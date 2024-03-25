@@ -10,11 +10,7 @@ const linkClass =
 export default function Sidebar() {
 	const navigate = useNavigate()
 	const Logout = () => {
-		localStorage.removeItem("userInfo")
-		localStorage.removeItem("token")
-		localStorage.removeItem("refreshToken")
-		localStorage.removeItem("rememberMe")
-		localStorage.removeItem("isAuthenticated")
+		localStorage.clear()
 		navigate("/", {replace: true})
 	}
   return (

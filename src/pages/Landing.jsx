@@ -178,7 +178,7 @@ export default function Landing() {
               </div>
             </div>
           </div>
-          <img src={DASHBOARD_IMG} alt="blockvote" className="" />
+          <img src={DASHBOARD_IMG} alt="blockvote" className="h-[600px] w-[800px]" />
         </div>
         {/* <img src={DASHBOARD_IMAGE} className="py-20 mx-36" alt="dashboard" /> */}
       </div>
@@ -189,33 +189,7 @@ export default function Landing() {
           Everything you need to <br />
           know
         </p>
-        <div className="flex flex-col items-start py-20 gap-20 w-full bg-white text-black">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <p className="text-3xl font-medium tracking-wide">
-                What is a SAAS platform?
-              </p>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              SAAS platform is a cloud-based software service that allows users
-              to access and use a variety of tools and functionality.
-            </p>
-          </details>
+        <div className="flex flex-col items-start py-20 gap-20 w-full">
           <p className="text-3xl font-medium tracking-wide">
             Do you possess the knowledge to help me with my election?
           </p>

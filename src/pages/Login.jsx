@@ -14,12 +14,21 @@ const Login = () => {
   const [userToken, setUserToken] = useState(null);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  const myHeaders = {
+    "Content-Type": "application/json",
+  };
+
+  const requestOptions = {
+    headers: myHeaders,
+  };
+
   const onSubmit = async (values, actions) => {
     setUserAuth(true);
+    console.log(values);
     try {
       const res = await client.post("organization/signin", {
         ...values,
-      });
+      }, requestOptions);
 
       if (res.data.organization.isVerified === true && res.status === 200) {
         let token = res.data.token;
@@ -34,6 +43,7 @@ const Login = () => {
           localStorage.setItem("token", JSON.stringify(token));
           localStorage.setItem("userInfo", JSON.stringify(userinfo));
           localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+          // navigate("/voters", { replace: true, });
           navigate("/dashboard", { replace: true, });
         }
       } else if (
@@ -51,7 +61,7 @@ const Login = () => {
     }
     // console.log(actions);
     // await new Promise((resolve) => setTimeout(resolve, 1000));
-    // actions.resetForm();
+    actions.resetForm();
   };
 
   useEffect(() => {

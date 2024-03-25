@@ -25,6 +25,7 @@ import {
 } from "./components/VotersWelcome";
 import { useState } from "react";
 import ErrorPage from "./components/ErrorPage";
+import Voters from "./components/Voters";
 // import Layout from "./components/shared/layout";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Overview />}></Route>
             <Route path="election" element={<Election />}></Route>
+            <Route path="voters" element={<Voters />}></Route>
             <Route path="candidate" element={<Candidates />}></Route>
             <Route path="create" element={<Create />}></Route>
           </Route>
@@ -59,7 +61,6 @@ function App() {
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>
-      {/* <Landing /> */}
     </>
   );
 }
