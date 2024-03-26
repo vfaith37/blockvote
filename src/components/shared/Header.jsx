@@ -134,7 +134,7 @@ export default function Header() {
           >
             Disconnect
           </button>
-          {account !== null && <p className="text-white absolute right-40 ">Wallet Address: {account}</p>}
+          {account !== null && <p className="text-white absolute left-[650px] ">Wallet Address: {account}</p>}
         </>
       ) : (
         <>
