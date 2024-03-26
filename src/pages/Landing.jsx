@@ -180,10 +180,8 @@ export default function Landing() {
           </div>
           <img src={DASHBOARD_IMG} alt="blockvote" className="h-[600px] w-[800px]" />
         </div>
-        {/* <img src={DASHBOARD_IMAGE} className="py-20 mx-36" alt="dashboard" /> */}
       </div>
 
-      {/* <div className="bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-teal-600 via-black to-black"> */}
       <div className="py-6 " id="about">
         <p className="text-6xl font-medium text-center">
           Everything you need to <br />

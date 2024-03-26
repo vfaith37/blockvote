@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { CANDIDATE_DATA } from "../data/dummydata";
+import React, { useRef, useState } from "react";
 import { HiOutlineCheck, HiOutlineSave, HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
 import Modal from "./Modal";
@@ -19,7 +18,6 @@ export default function Voters() {
   const [voterData, setVoterData] = useState([]);
   const [voterToDelete, setVoterToDelete] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const fileRef = useRef(null);
   const electionId = localStorage.getItem("electionId");
   const refreshToken = localStorage.getItem("refreshToken");
   const myHeaders = {
@@ -92,7 +90,6 @@ export default function Voters() {
     errors,
     touched,
     isSubmitting,
-    setFieldValue,
     handleBlur,
     handleChange,
     handleSubmit,

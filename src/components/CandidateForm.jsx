@@ -1,10 +1,10 @@
 // CandidateForm.js
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useFormik } from "formik";
 import { candidateSchema } from "../schemas";
 import classNames from "classnames";
 import PreviewImage from "./PreviewImage";
-import { HiOutlineTrash, HiOutlineSave } from "react-icons/hi";
+import { HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
 
 const inputStyles =

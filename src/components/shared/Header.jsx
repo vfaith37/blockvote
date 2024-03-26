@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import PROFILE_IMAGE from "../../assets/profile.jpg";
-import { ethers, providers } from "ethers";
-import Web3 from "web3";
-import client from "../../api/client";
+// import { ethers, providers } from "ethers";
+// import Web3 from "web3";
+// import client from "../../api/client";
 
 export default function Header() {
-  const [provider, setProvider] = useState(null);
+  // const [provider, setProvider] = useState(null);
   const [account, setAccount] = useState(null);
   // const [isConnected, setIsConnected] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [ethBalance, setEthBalance] = useState("");
+  // const [ethBalance, setEthBalance] = useState("");
   const [userInfo, setUserInfo] = useState("");
   // useEffect to fetch data from local storage when the component mounts
   useEffect(() => {

@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CANDIDATE_DATA } from "../data/dummydata";
 import { HiOutlineCheck, HiOutlineSave, HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
 import Modal from "./Modal";
 import Papa from "papaparse";
-import { candidateSchema } from "../schemas";
 import { useFormik } from "formik";
 import classNames from "classnames";
 import PreviewImage from "./PreviewImage";

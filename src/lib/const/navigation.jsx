@@ -14,12 +14,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		path: '/dashboard',
 		icon: <HiOutlineViewGrid />
 	},
-	{
-		key: 'election',
-		label: 'Election',
-		path: '/dashboard/election',
-		icon: <HiOutlineCalendar />
-	},
+	// {
+	// 	key: 'election',
+	// 	label: 'Election',
+	// 	path: '/dashboard/election',
+	// 	icon: <HiOutlineCalendar />
+	// },
 	{
 		key: 'voters',
 		label: 'Voters',
