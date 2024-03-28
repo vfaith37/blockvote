@@ -157,26 +157,14 @@ export function VoterSelect() {
         <img src={LOGO} alt="blockvote" className="h-4" />
         <h1 className="text-xl font-bold">blockvote</h1>
       </div>
-      {/* <p className="text-teal-600 text-[326px] font-black font-['Outfit']">
-        Voted
-      </p>
-      <p className="text-neutral-400 text-2xl font-normal font-['Outfit'] tracking-wide">
-        Your ballot has been casted
-      </p>
-      <button
-        className="w-40 h-14 px-6 py-4 bg-teal-600 justify-center items-center mt-[111px] text-white"
-        onClick={goHome}
-      >
-        Back to Home
-      </button> */}
-      <div className="mt mt-11">
+      <div className="mt-11 w-96 sm:w-auto">
         {selectedCandidatesObject.map((item) => {
           return (
-            <div className="flex gap-4 text-left items-start">
-              <p className="w-36 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
+            <div className="flex gap-4">
+              <p className="w-36 sm:w-60 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
                 {item.position}
               </p>
-              <p className="opacity-50 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
+              <p className="w-56 sm:w-auto opacity-50 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
                 {" "}
                 {item.firstname.charAt(0).toUpperCase() +
                   item.firstname.slice(1)}{" "}
