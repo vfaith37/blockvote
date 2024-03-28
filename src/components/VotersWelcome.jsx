@@ -8,9 +8,9 @@ import { Data } from "../data/dummydata";
 export function VotersWelcome() {
   const navigate = useNavigate();
   return (
-    <div className="mt-[200px] flex flex-col items-center">
-      <p className="font-bold text-[77px]">Welcome James</p>
-      <p className="text-neutral-500 text-[35px] font-normal">
+    <div className="mt-52 flex flex-col items-center">
+      <p className="font-bold text-5xl sm:text-7xl">Welcome James</p>
+      <p className="text-neutral-500 text-lg sm:text-4xl font-normal">
         Let's walk you through the voting process
       </p>
       <button
@@ -26,9 +26,9 @@ export function VotersWelcome() {
 export function ElectionInfo() {
   const navigate = useNavigate();
   return (
-    <div className="mt-[220px] flex flex-col items-center">
-      <p className="font-bold text-[77px]">BUCC GENERAL ELECTIONS</p>
-      <p className="text-neutral-500 text-[35px] font-normal">
+    <div className="mt-[220px] flex flex-col items-center text-center">
+      <p className="font-bold text-5xl sm:text-7xl">BUCC GENERAL ELECTIONS</p>
+      <p className="text-neutral-500 text-lg sm:text-4xl font-normal">
         Time to choose your preferred candidate
       </p>
       <button
@@ -152,7 +152,7 @@ export function VoterSelect() {
   //   navigate("/votingend");
   // };
   return (
-    <div className="flex flex-col pt-28 items-center w-screen h-screen overflow-hidden dark:text-white dark:bg-black bg-cover bg-center">
+    <div className="flex flex-col items-center pt-28 w-screen h-screen overflow-hidden dark:text-white dark:bg-black bg-cover bg-center">
       <div className="flex items-center gap-3">
         <img src={LOGO} alt="blockvote" className="h-4" />
         <h1 className="text-xl font-bold">blockvote</h1>
@@ -169,12 +169,32 @@ export function VoterSelect() {
       >
         Back to Home
       </button> */}
-      <table className="table-auto mt-[43px]">
+      <div className="mt mt-11">
+        {selectedCandidatesObject.map((item) => {
+          return (
+            <div className="flex gap-4 text-left items-start">
+              <p className="w-36 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
+                {item.position}
+              </p>
+              <p className="opacity-50 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
+                {" "}
+                {item.firstname.charAt(0).toUpperCase() +
+                  item.firstname.slice(1)}{" "}
+                {item.lastname.charAt(0).toUpperCase() + item.lastname.slice(1)}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* <table className="table-auto mt-[43px]">
         {selectedCandidatesObject.map((item) => {
           return (
             <tbody>
               <tr>
-                <td className="border-none px-14 py-2 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">{item.position}</td>
+                <td className="border-none px-14 py-2 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
+                  {item.position}
+                </td>
                 <td className="border-none px-4 py-2 opacity-50 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
                   {item.firstname.charAt(0).toUpperCase() +
                     item.firstname.slice(1)}{" "}
@@ -185,10 +205,10 @@ export function VoterSelect() {
             </tbody>
           );
         })}
-      </table>
+      </table> */}
       <button
         className="w-40 h-14 px-6 py-4 bg-teal-600 justify-center items-center mt-[111px] text-white flex gap-2"
-        onClick={()=>navigate("/votingend")}
+        onClick={() => navigate("/votingend")}
       >
         Cast ballot <HiArrowNarrowRight />
       </button>
