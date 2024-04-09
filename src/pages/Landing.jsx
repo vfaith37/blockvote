@@ -34,7 +34,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="w-full h-full bg-white dark:bg-black text-black dark:text-white py-10 px-36 scroll-smooth touch-auto ">
+    <div className="w-full h-full bg-white dark:bg-black text-black dark:text-white py-10 px-36 scroll-smooth touch-auto overflow-hidden">
       <div className="flex justify-between h-10 items-center ">
         <div className="flex items-center gap-2 px-2 py-3">
           <img src={LOGO} alt="blockvote" className="h-4" />
