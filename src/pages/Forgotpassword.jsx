@@ -1,29 +1,45 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { HiArrowNarrowLeft } from "react-icons/hi";
 
 const Forgotpassword = () => {
   const navigate = useNavigate();
   return (
-    <div className="w-full flex flex-col max-w-[500px] py-[40%]">
-      <div className="w-full flex flex-col mb-2">
-        <h3 className="text-3xl font-semibold mb-2">Forgot Password 🔒</h3>
-        <p className="text-sm text-black text-opacity-50 font-normal">
-          Input your email to recover password to access patty account
+    <div className="w-full flex flex-col max-w-md py-12 text-[#060606]">
+      <div className="rise w-full flex flex-col mb-8">
+        <p className="stamp text-teal-600">account recovery</p>
+        <h3 className="font-display text-4xl font-bold mt-3 tracking-tight">
+          Forgot password
+        </h3>
+        <p className="text-base text-neutral-500 mt-3">
+          Enter your email and we'll send you a link to reset your blockvote
+          password.
         </p>
       </div>
 
-      <div className="w-full flex flex-col pt-2">
-        <p className="t-black text-[13px] font-semibold">Email</p>
+      <div className="rise rise-2 w-full">
+        <label htmlFor="recovery-email" className="stamp text-neutral-500">
+          Email
+        </label>
         <input
+          id="recovery-email"
           type="email"
-          placeholder="email"
-          className="w-full h-11 text-black py-2 my-2 bg-transparent rounded-md border border-black/40 pl-2"
+          autoComplete="email"
+          className="w-full h-12 px-3 mt-2 text-black bg-white/70 border border-neutral-400 focus:border-teal-600 focus:outline-none transition-colors"
         />
-      </div>
 
-      <div className="w-full flex flex-col my-2">
-        <button onClick={()=> navigate.replace("/signin")} className="w-full my-2 text-white bg-[#00A699] font-semibold  rounded-md p-2 text-center flex items-center justify-center">
+        <button
+          onClick={() => navigate("/organization", { replace: true })}
+          className="btn-primary w-full h-12 mt-7 text-base"
+        >
           Continue
+        </button>
+
+        <button
+          onClick={() => navigate("/organization")}
+          className="flex items-center gap-2 text-sm text-neutral-500 hover:text-teal-600 mx-auto mt-6 bg-transparent"
+        >
+          <HiArrowNarrowLeft /> Back to sign in
         </button>
       </div>
     </div>

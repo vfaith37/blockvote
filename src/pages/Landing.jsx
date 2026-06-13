@@ -5,7 +5,37 @@ import DASHBOARD_IMAGE from "../assets/dashboard.png";
 import DASHBOARD_IMG from "../assets/img.png";
 import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { HiMoon, HiSun } from "react-icons/hi";
+import {
+  HiMoon,
+  HiSun,
+  HiArrowNarrowRight,
+  HiOutlineShieldCheck,
+} from "react-icons/hi";
+
+const STEPS = [
+  {
+    number: "01",
+    title: "Get App",
+    body: "BlockVote's platform provides essential features that empower users to engage in the democratic process, fostering safe and secured ballot submission without disclosing voter identity.",
+  },
+  {
+    number: "02",
+    title: "Accessibility",
+    body: "Blockchain voting improves accessibility by enabling remote voting through digital devices such as smartphones or computers.",
+  },
+  {
+    number: "03",
+    title: "Transparency",
+    body: "Every transaction, from the casting of votes to the tallying of results, is recorded on the blockchain and is visible to all participants.",
+  },
+];
+
+const FAQS = [
+  "Do you possess the knowledge to help me with my election?",
+  "What is Blockvote?",
+  "Are there any gas fees incurred?",
+  "How can I get a proposal?",
+];
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -18,6 +48,7 @@ export default function Landing() {
     } else {
       localStorage.setItem("theme", theme);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -34,221 +65,212 @@ export default function Landing() {
   };
 
   return (
-    <div className="w-full h-full bg-white dark:bg-black text-black dark:text-white py-10 px-36 scroll-smooth touch-auto overflow-hidden">
-      <div className="flex justify-between h-10 items-center ">
-        <div className="flex items-center gap-2 px-2 py-3">
-          <img src={LOGO} alt="blockvote" className="h-4" />
-          <h1 className="text-xl font-bold mr-auto">blockvote</h1>
+    <div className="bg-ledger w-full min-h-dvh text-neutral-900 dark:text-white py-8 px-6 md:px-16 lg:px-24">
+      {/* Nav */}
+      <nav className="flex justify-between items-center gap-4">
+        <div className="flex items-center gap-2.5">
+          <img src={LOGO} alt="" className="h-4" />
+          <span className="text-xl font-bold font-display tracking-tight">
+            blockvote
+          </span>
         </div>
 
-        <div className="flex gap-20">
-          <a
-            href="#services"
-            className="text-black dark:text-white hover:text-teal-600"
-          >
-            <div className="text-lg font-medium">Services</div>
-          </a>
-          <a
-            href="#about"
-            className="text-black dark:text-white hover:text-teal-600"
-          >
-            <div className="text-lg font-medium">About</div>
-          </a>
-          <a
-            href="#contact"
-            className="text-black dark:text-white hover:text-teal-600"
-          >
-            <div className="text-lg font-medium">Contact</div>
-          </a>
+        <div className="hidden md:flex gap-10">
+          {[
+            ["#services", "Services"],
+            ["#about", "About"],
+            ["#contact", "Contact"],
+          ].map(([href, label]) => (
+            <a
+              key={href}
+              href={href}
+              className="stamp text-neutral-500 hover:text-teal-500 hover:no-underline pt-1"
+            >
+              {label}
+            </a>
+          ))}
         </div>
 
-        <div className="flex gap-10">
+        <div className="flex gap-3 items-center">
           <button
             onClick={() => navigate("/organization")}
-            className="w-28 h-12 bg-teal-600 justify-center items-center inline-flex cursor-pointer"
+            className="btn-primary h-11 px-5 text-sm"
           >
             Log In
           </button>
           <button
             onClick={() => navigate("organization/signup")}
-            className="text-lg font-medium w-28 h-12 border justify-center items-center inline-flex cursor-pointer dark:border-white border-black"
+            className="btn-ghost h-11 px-5 text-sm"
           >
             Sign Up
           </button>
           <button
             onClick={handleSwitch}
-            className="text-lg font-medium items-center inline-flex cursor-pointer self-end border dark:border-white border-black h-12 w-12 justify-center"
+            aria-label={
+              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+            }
+            className="h-11 w-11 flex items-center justify-center text-neutral-500 hover:text-teal-500"
           >
-            {theme === "dark" ? <HiMoon size={30} /> : <HiSun size={30} />}
+            {theme === "dark" ? <HiMoon size={24} /> : <HiSun size={24} />}
           </button>
         </div>
-      </div>
-      <div className="flex justify-between py-20 items-center bg-hero bg-cover bg-center">
-        <div className="w-[587px]">
-          <p className="text-6xl font-bold pb-8">
-            <span className="text-teal-600">Secure</span> &{" "}
-            <span className="text-teal-600">accessible</span> voting at your
+      </nav>
+
+      {/* Hero */}
+      <div className="flex flex-col lg:flex-row justify-between py-20 lg:py-28 items-center gap-12">
+        <div className="max-w-xl">
+          <p className="rise stamp text-teal-600">
+            verifiable elections, sealed on-chain
+          </p>
+          <h1 className="rise rise-1 font-display text-5xl sm:text-6xl font-bold mt-5 tracking-tight leading-[1.05]">
+            <span className="text-teal-500">Secure</span> &{" "}
+            <span className="text-teal-500">accessible</span> voting at your
             fingertips.
+          </h1>
+          <p className="rise rise-2 text-base sm:text-lg font-normal text-neutral-500 mt-6 leading-relaxed">
+            A specialized voting platform based on the blockchain, designed for
+            voters and candidates — facilitating a smooth electoral process
+            across multiple channels.
           </p>
-          <p className="text-base font-medium">
-            A specialized voting platform based on{" "}
-            <span className="dark:text-neutral-600 text-teal-600 font-extrabold">
-              blockchain
-            </span>{" "}
-            designed for Voters and Candidates, facilitating a smooth electoral
-            process across multiple <br />
-            channels.
-          </p>
-          <div className="bg-teal-600 w-36 h-14 flex justify-center items-center my-8">
-            <p className="text-white text-base font-bold">Get Started</p>
+          <div className="rise rise-3 flex flex-wrap gap-4 mt-9">
+            <button
+              onClick={() => navigate("organization/signup")}
+              className="btn-primary h-14 px-7 text-base"
+            >
+              Get Started <HiArrowNarrowRight />
+            </button>
+            <button
+              onClick={() => navigate("/voters/login")}
+              className="btn-ghost h-14 px-7 text-base"
+            >
+              I'm here to vote
+            </button>
           </div>
+          <p className="rise rise-4 flex items-center gap-2 text-neutral-500 text-xs mt-8">
+            <HiOutlineShieldCheck size={14} className="text-teal-600" />
+            <span className="stamp">
+              every ballot independently verifiable
+            </span>
+          </p>
         </div>
         <img
           src={WEB_IMAGE}
-          alt="web"
-          className="w-[550px] h-[550px] decoration-black"
+          alt="Illustration of secure online voting"
+          className="w-full max-w-md lg:max-w-[520px]"
         />
       </div>
 
-      <div className="py-16 flex flex-col items-center" id="services">
-        <div className="flex flex-col items-center">
-          <p className="text-teal-600 text-2xl font-bold">WHAT WE DO</p>
-          <p className="text-4xl font-bold">Our mission explained</p>
-          <p className="text-2xl font-normal text-center">
-            Our mission explained We leverage cutting-edge technology so people
-            can vote securely from anywhere and <br />
-            administrators can manage elections with ease.
-          </p>
-        </div>
-        <img src={DASHBOARD_IMAGE} className="mt-14" alt="dashboard" />
-      </div>
-
-      <div className="py-10">
-        <div className="flex flex-col items-center">
-          <p className="text-teal-600 text-2xl font-bold">HOW IT WORKS</p>
-          <p className="text-4xl font-bold text-center">
-            Voting made simple and <br />
-            reliable
-          </p>
-          <p className="text-2xl font-normal text-center">
-            A blockchain voting system provides a decentralized, secure, and
-            transparent platform <br />
-            for conducting elections.
-          </p>
-        </div>
-        <div className="flex justify-between mt-[81px]">
-          <div>
-            <div className="flex gap-4 m-[40px]">
-              <div className="bg-teal-600 flex flex-col justify-center items-center h-12 w-12 rounded-xl">
-                <p className="text-2xl font-bold">1</p>
-              </div>
-              <div>
-                <p className="text-2xl font-medium mb-[10px]">Get App</p>
-                <p className="w-96 text-zinc-400 text-xl font-normal">
-                  BlockVote's platform provides essential features that empower
-                  users to engage in democratic process, fostering a safe and
-                  secured ballot submission without disclosing voter identity.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4 m-[40px]">
-              <div className="bg-teal-600 flex flex-col justify-center items-center h-12 w-12 rounded-xl">
-                <p className="text-2xl font-bold">2</p>
-              </div>
-              <div>
-                <p className="text-2xl font-medium mb-[10px]">Accessibility</p>
-                <p className="w-96 text-zinc-400 text-xl font-normal">
-                  Blockchain voting systems can improve accessibility by
-                  enabling remote voting through digital devices such as
-                  smartphones or computers.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4 m-[40px]">
-              <div className="bg-teal-600 flex flex-col justify-center items-center h-12 w-12 rounded-xl">
-                <p className="text-2xl font-bold">3</p>
-              </div>
-              <div>
-                <p className="text-2xl font-medium mb-[10px]">Transparency</p>
-                <p className="w-96 text-zinc-400 text-xl font-normal">
-                  Every transaction, from the casting of votes to the tallying
-                  of results, is recorded on the blockchain and is visible to
-                  all participants.
-                </p>
-              </div>
-            </div>
-          </div>
-          <img src={DASHBOARD_IMG} alt="blockvote" className="h-[600px] w-[800px]" />
-        </div>
-      </div>
-
-      <div className="py-6 " id="about">
-        <p className="text-6xl font-medium text-center">
-          Everything you need to <br />
-          know
+      {/* Services */}
+      <section className="py-20 flex flex-col items-center" id="services">
+        <p className="stamp text-teal-600">what we do</p>
+        <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 text-center tracking-tight">
+          Our mission explained
+        </h2>
+        <p className="text-base sm:text-lg text-neutral-500 text-center max-w-2xl mt-4 leading-relaxed">
+          We leverage cutting-edge technology so people can vote securely from
+          anywhere and administrators can manage elections with ease.
         </p>
-        <div className="flex flex-col items-start py-20 gap-20 w-full">
-          <p className="text-3xl font-medium tracking-wide">
-            Do you possess the knowledge to help me with my election?
-          </p>
-          <p className="text-3xl font-medium tracking-wide">
-            What is Blockvote
-          </p>
-          <p className="text-3xl font-medium tracking-wide">
-            Are there any gas fees incurred
-          </p>
-          <p className="text-3xl font-medium tracking-wide">
-            How can I get a proposal?
-          </p>
+        <div className="mt-14 border dark:border-neutral-800 border-neutral-300 p-2 dark:bg-black/40 bg-white/60">
+          <img src={DASHBOARD_IMAGE} alt="BlockVote dashboard preview" />
         </div>
-      </div>
+      </section>
 
-      <div className="flex justify-between" id="contact">
-        <div>
-          <p className="text-4xl font-bold">
-            Say Hi to our <br />
-            team
+      {/* How it works */}
+      <section className="py-16">
+        <div className="flex flex-col items-center">
+          <p className="stamp text-teal-600">how it works</p>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 text-center tracking-tight">
+            Voting made simple and reliable
+          </h2>
+          <p className="text-base sm:text-lg text-neutral-500 text-center max-w-2xl mt-4 leading-relaxed">
+            A blockchain voting system provides a decentralized, secure, and
+            transparent platform for conducting elections.
           </p>
-          <div className="flex gap-2 py-4">
-            {/* <HiOutlineInsta */}
-            <FaXTwitter className="h-10 w-11" />
-            <FaInstagram className="h-10 w-11" />
-            <FaLinkedin className="h-10 w-11" />
+        </div>
+        <div className="flex flex-col lg:flex-row justify-between items-center mt-16 gap-12">
+          <div className="flex flex-col gap-10 max-w-xl">
+            {STEPS.map((step) => (
+              <div key={step.number} className="flex gap-6">
+                <p className="stamp text-teal-500 text-xl pt-1.5 shrink-0">
+                  {step.number}
+                </p>
+                <div>
+                  <h3 className="font-display text-xl font-semibold tracking-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-neutral-500 text-base mt-2 leading-relaxed">
+                    {step.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <img
+            src={DASHBOARD_IMG}
+            alt="BlockVote election management"
+            className="w-full max-w-xl"
+          />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16" id="about">
+        <p className="stamp text-teal-600 text-center">faq</p>
+        <h2 className="font-display text-3xl sm:text-5xl font-bold text-center mt-3 tracking-tight">
+          Everything you need to know
+        </h2>
+        <div className="max-w-3xl mx-auto mt-12 border-t dark:border-neutral-800 border-neutral-300">
+          {FAQS.map((question) => (
+            <p
+              key={question}
+              className="text-lg sm:text-xl font-medium tracking-wide py-6 border-b dark:border-neutral-800 border-neutral-300"
+            >
+              {question}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact / footer */}
+      <footer
+        className="flex flex-col md:flex-row justify-between gap-12 py-16 border-t dark:border-neutral-800 border-neutral-300"
+        id="contact"
+      >
+        <div>
+          <p className="font-display text-3xl font-bold tracking-tight">
+            Say hi to our team
+          </p>
+          <div className="flex gap-5 py-5 text-neutral-500">
+            <FaXTwitter className="h-6 w-6 hover:text-teal-500 cursor-pointer" />
+            <FaInstagram className="h-6 w-6 hover:text-teal-500 cursor-pointer" />
+            <FaLinkedin className="h-6 w-6 hover:text-teal-500 cursor-pointer" />
           </div>
         </div>
-        <div className="flex gap-8">
-          <div className="">
-            <p className="text-2xl font-medium">Contact</p>
-            <p className="text-zinc-400 text-xl font-normal">
-              +234-913-9073-466
-            </p>
-            <p className="text-zinc-400 text-xl font-normal">
-              Babcock University
-            </p>
-          </div>
-          <div className="">
-            <p className="text-2xl font-medium">Socials</p>
-            <p className="text-zinc-400 text-xl font-normal">Instagram</p>
-            <p className="text-zinc-400 text-xl font-normal">X</p>
-            <p className="text-zinc-400 text-xl font-normal">Linkedin</p>
-          </div>
-          <div className="">
-            <p className="text-2xl font-medium">Company</p>
-            <p className="text-zinc-400 text-xl font-normal">About</p>
-            <p className="text-zinc-400 text-xl font-normal">Terms</p>
-            <p className="text-zinc-400 text-xl font-normal">Privacy</p>
-          </div>
-          <div className="">
-            <p className="text-2xl font-medium">Products</p>
-            <p className="text-zinc-400 text-xl font-normal">Busa APP</p>
-            <p className="text-zinc-400 text-xl font-normal">Ease</p>
-          </div>
+        <div className="flex flex-wrap gap-12">
+          {[
+            ["Contact", ["+234-913-9073-466", "Babcock University"]],
+            ["Socials", ["Instagram", "X", "Linkedin"]],
+            ["Company", ["About", "Terms", "Privacy"]],
+            ["Products", ["Busa APP", "Ease"]],
+          ].map(([title, items]) => (
+            <div key={title}>
+              <p className="stamp text-neutral-400 dark:text-neutral-300">
+                {title}
+              </p>
+              <div className="mt-3 flex flex-col gap-1.5">
+                {items.map((item) => (
+                  <p key={item} className="text-neutral-500 text-base">
+                    {item}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
-      <p className="py-4 text-center opacity-70 text-zinc-400 text-xl font-normal">
-        The future of voting is just a tap away
+      </footer>
+      <p className="stamp py-6 text-center text-neutral-500">
+        the future of voting is just a tap away
       </p>
-      {/* </div> */}
     </div>
   );
 }

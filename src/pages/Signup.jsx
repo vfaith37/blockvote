@@ -1,40 +1,46 @@
 import React, { useState } from "react";
-import GOOGLE_ICON from "../assets/google-icon.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { signUpSchema } from "../schemas";
 import classNames from "classnames";
+import { HiArrowNarrowRight } from "react-icons/hi";
 import client from "../api/client";
 
 const inputStyles =
-  "w-full h-11 text-black py-2 my-2 bg-transparent rounded-md border border-black/40 pl-2";
-const checked = "w-[15px] h-[15px] mr-2";
+  "w-full h-11 px-3 mt-1.5 text-black bg-white/70 border border-neutral-400 " +
+  "placeholder:text-neutral-400 focus:border-teal-600 focus:outline-none transition-colors";
+
+const FIELDS = [
+  { id: "firstname", label: "First name", type: "text" },
+  { id: "lastname", label: "Last name", type: "text" },
+  { id: "name", label: "Organization", type: "text" },
+  { id: "email", label: "Email", type: "email" },
+  { id: "password", label: "Password", type: "password" },
+  { id: "confirmpassword", label: "Confirm password", type: "password" },
+];
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   const onSubmit = async (values, actions) => {
-    console.log(values);
+    setError(null);
     try {
-      const res = await client.post("organization/signup", {
-        ...values,
-      });
+      const res = await client.post("organization/signup", { ...values });
 
-      console.log(res);
       if (res.data.success && res.status === 200) {
-        console.log(res.data);
         navigate("/organization/otp", {
           replace: true,
           state: { username: values.email, password: values.password },
         });
       }
     } catch (e) {
-      console.log(e);
-    } finally {
+      setError(
+        (e.response && e.response.data && e.response.data.message) ||
+          "Unable to create your account. Please try again."
+      );
     }
-    console.log(actions);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
+    actions.setSubmitting(false);
   };
 
   const [check, setCheck] = useState(false);
@@ -59,163 +65,97 @@ const Signup = () => {
     onSubmit,
   });
 
-  console.log(errors);
   return (
-    <div className="w-full flex flex-col max-w-[500px] py-[20%]">
-      <div className="w-full flex flex-col mb-2">
-        <h3 className="text-3xl font-semibold mb-2">Create your Account 👋</h3>
-        <p className="text-sm text-black text-opacity-50  font-normal">
-          Let's enter your data to continue to use blockvote
+    <div className="w-full flex flex-col max-w-md py-12 text-[#060606]">
+      <div className="rise w-full flex flex-col mb-7">
+        <p className="stamp text-teal-600">organization access</p>
+        <h3 className="font-display text-4xl font-bold mt-3 tracking-tight">
+          Create your account
+        </h3>
+        <p className="text-base text-neutral-500 mt-3">
+          Already registered?
+          <Link to="/organization" className="hover:no-underline">
+            <span className="text-teal-600 font-semibold cursor-pointer">
+              {" "}
+              Sign in
+            </span>
+          </Link>
         </p>
       </div>
-      <form onSubmit={handleSubmit} autoComplete="off">
-        <div className="w-full flex flex-col pt-2">
-          <div className="flex justify-between text-[13px]">
-            <p className="text-black  font-semibold">First Name</p>
-            {errors.firstname && touched.firstname && (
-              <p className="error text-red-600">{errors.firstname}</p>
-            )}
-          </div>
-          <input
-            type="text"
-            id="firstname"
-            className={classNames(
-              inputStyles,
-              errors.firstname && touched.firstname ? "input-error" : ""
-            )}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.firstname}
-          />
-          <div className="flex justify-between text-[13px]">
-            <p className="text-black  font-semibold">Last Name</p>
-            {errors.lastname && touched.lastname && (
-              <p className="error text-red-600">{errors.lastname}</p>
-            )}
-          </div>
-          <input
-            id="lastname"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.lastname}
-            type="text"
-            className={classNames(
-              inputStyles,
-              errors.lastname && touched.lastname ? "input-error" : ""
-            )}
-          />
-          <div className="flex justify-between text-[13px]">
-            <p className="text-black  font-semibold">Organization</p>
-            {errors.name && touched.name && (
-              <p className="error text-red-600">{errors.name}</p>
-            )}
-          </div>
-          <input
-            id="name"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.name}
-            type="text"
-            className={classNames(
-              inputStyles,
-              errors.name && touched.name ? "input-error" : ""
-            )}
-          />
-          <div className="flex justify-between text-[13px]">
-            <p className="text-black  font-semibold">Email</p>
-            {errors.email && touched.email && (
-              <p className="error text-red-600">{errors.email}</p>
-            )}
-          </div>
-          <input
-            value={values.email}
-            onChange={handleChange}
-            id="email"
-            type="email"
-            className={classNames(
-              inputStyles,
-              errors.email && touched.email ? "input-error" : ""
-            )}
-          />
-          <div className="flex justify-between text-[13px]">
-            <p className="text-black  font-semibold">Password</p>
-            {errors.password && touched.password && (
-              <p className="error text-red-600">{errors.password}</p>
-            )}
-          </div>
-          <input
-            id="password"
-            type="password"
-            value={values.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className={classNames(
-              inputStyles,
-              errors.password && touched.password ? "input-error" : ""
-            )}
-          />
-          <div className="flex justify-between text-[13px]">
-            <p className="text-black  font-semibold">Confirm password</p>
-            {errors.confirmpassword && touched.confirmpassword && (
-              <p className="error text-red-600">{errors.password}</p>
-            )}
-          </div>
-          <input
-            id="confirmpassword"
-            type="password"
-            value={values.confirmpassword}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className={classNames(
-              inputStyles,
-              errors.confirmpassword && touched.confirmpassword
-                ? "input-error"
-                : ""
-            )}
-          />
-        </div>
 
-        <div className="w-full items-center pt-2">
-          <div className="w-full flex items-center">
-            <input
-              type="checkbox"
-              checked={check}
-              className={classNames(
-                checked,
-                errors.acceptedTos && touched.acceptedTos
+      <form
+        onSubmit={handleSubmit}
+        autoComplete="off"
+        className="rise rise-2 w-full"
+      >
+        <div className="grid sm:grid-cols-2 gap-x-4 gap-y-4">
+          {FIELDS.map((field) => (
+            <div
+              key={field.id}
+              className={
+                field.id === "name" || field.id === "email"
+                  ? "sm:col-span-2"
+                  : ""
+              }
+            >
+              <label htmlFor={field.id} className="stamp text-neutral-500">
+                {field.label}
+              </label>
+              <input
+                id={field.id}
+                type={field.type}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values[field.id]}
+                className={classNames(
+                  inputStyles,
+                  errors[field.id] && touched[field.id]
+                    ? "border-red-500"
+                    : ""
+                )}
+              />
+              {errors[field.id] && touched[field.id] && (
+                <p className="text-red-600 text-xs mt-1">
+                  {errors[field.id]}
+                </p>
               )}
-              onClick={() => setCheck(!check)}
-            />
-            <p className="text-[12px] ">
-              By signing up to patty you agree all{" "}
-              <span className="text-black font-semibold text-opacity-50 underline">
-                terms and conditions
-              </span>
-            </p>
-          </div>
+            </div>
+          ))}
         </div>
 
-        <div className="w-full flex flex-col my-2">
-          <button
-            disabled={isSubmitting || check === false}
-            type="submit"
-            className="w-full my-2 text-white bg-[#00A699] font-semibold  rounded-md p-2 text-center flex items-center justify-center"
+        <label className="w-full flex items-center mt-6 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={check}
+            className="w-4 h-4 mr-2 accent-teal-600"
+            onChange={() => setCheck(!check)}
+          />
+          <span className="text-sm">
+            I agree to the blockvote{" "}
+            <span className="font-semibold underline underline-offset-2">
+              terms and conditions
+            </span>
+          </span>
+        </label>
+
+        {error && (
+          <p
+            role="alert"
+            className="text-red-600 text-sm mt-5 text-center border border-red-300 bg-red-50 px-3 py-2"
           >
-            Sign up
-          </button>
-        </div>
-      </form>
+            {error}
+          </p>
+        )}
 
-      <div className="w-full flex items-center justify-center relative py-2">
-        <div className="w-full h-[1px] bg-black"></div>
-        <div className="w-[45px] text-[#F5F5F5] absolute bg-[#F5F5F5]">
-          <p className="text-sm w-[45px] text-black/80 ml-3"> OR</p>
-        </div>
-      </div>
-      <div className="w-full my-4 text-[#060606] bg-transparent border border-black/40 font-semibold rounded-md p-2 text-center flex items-center justify-center cursor-pointer">
-        <img src={GOOGLE_ICON} alt="metamask" className="h-5 mr-2" />
-        Continue with Google
-      </div>
+        <button
+          disabled={isSubmitting || check === false}
+          type="submit"
+          className="btn-primary w-full h-12 mt-7 text-base"
+        >
+          {isSubmitting ? "Creating account..." : "Sign up"}
+          {!isSubmitting && <HiArrowNarrowRight />}
+        </button>
+      </form>
     </div>
   );
 };

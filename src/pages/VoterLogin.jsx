@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import classNames from "classnames";
+import { HiArrowNarrowRight, HiOutlineLockClosed } from "react-icons/hi";
 import client from "../api/client";
 
 const voterSignInSchema = yup.object().shape({
@@ -14,7 +15,9 @@ const voterSignInSchema = yup.object().shape({
 });
 
 const inputStyles =
-  "w-full h-11 py-2 my-2 bg-transparent rounded-md border border-neutral-500 pl-2 dark:text-white text-black";
+  "w-full h-12 px-3 bg-transparent border dark:border-neutral-700 border-neutral-400 " +
+  "dark:text-white text-neutral-900 placeholder:text-neutral-500 " +
+  "focus:border-teal-500 focus:outline-none transition-colors";
 
 const VoterLogin = () => {
   const navigate = useNavigate();
@@ -53,57 +56,88 @@ const VoterLogin = () => {
   });
 
   return (
-    <div className="mt-40 flex flex-col items-center w-[340px] sm:w-[420px]">
-      <p className="font-bold text-4xl sm:text-5xl text-center">Voter Sign in</p>
-      <p className="text-neutral-500 text-base sm:text-lg font-normal mt-3 text-center">
-        Use the credentials emailed to you by your election administrator
-      </p>
+    <div className="flex-1 flex flex-col justify-center items-center w-full max-w-md py-16">
+      <div className="rise w-full">
+        <p className="stamp text-teal-600">voter access</p>
+        <h1 className="font-display font-bold text-4xl sm:text-5xl mt-3 tracking-tight">
+          Sign in to vote
+        </h1>
+        <p className="text-neutral-500 text-base mt-3 leading-relaxed">
+          Use the credentials emailed to you by your election administrator.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} autoComplete="off" className="w-full mt-10">
-        <p className="font-semibold text-[17px]">Email</p>
+      <form
+        onSubmit={handleSubmit}
+        autoComplete="off"
+        className="rise rise-2 w-full mt-10 border dark:border-neutral-800 border-neutral-300 dark:bg-black/40 bg-white/60 p-7 sm:p-9"
+      >
+        <label htmlFor="email" className="stamp text-neutral-500 block">
+          Email
+        </label>
         <input
           id="email"
           type="email"
+          autoComplete="email"
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
           className={classNames(
             inputStyles,
+            "mt-2",
             errors.email && touched.email ? "border-red-500" : ""
           )}
         />
         {errors.email && touched.email && (
-          <p className="text-red-500 text-sm">{errors.email}</p>
+          <p className="text-red-500 text-sm mt-1.5">{errors.email}</p>
         )}
 
-        <p className="font-semibold text-[17px] mt-4">Password</p>
+        <label
+          htmlFor="password"
+          className="stamp text-neutral-500 block mt-6"
+        >
+          Password
+        </label>
         <input
           id="password"
           type="password"
+          autoComplete="current-password"
           value={values.password}
           onChange={handleChange}
           onBlur={handleBlur}
           className={classNames(
             inputStyles,
+            "mt-2",
             errors.password && touched.password ? "border-red-500" : ""
           )}
         />
         {errors.password && touched.password && (
-          <p className="text-red-500 text-sm">{errors.password}</p>
+          <p className="text-red-500 text-sm mt-1.5">{errors.password}</p>
         )}
 
         {error && (
-          <p className="text-red-500 text-sm mt-4 text-center">{error}</p>
+          <p
+            role="alert"
+            className="text-red-500 text-sm mt-5 text-center border border-red-500/30 bg-red-500/5 px-3 py-2"
+          >
+            {error}
+          </p>
         )}
 
         <button
           disabled={isSubmitting}
           type="submit"
-          className="w-full h-14 bg-teal-600 mt-8 text-white text-base font-bold disabled:opacity-50"
+          className="btn-primary w-full h-14 mt-8 text-base"
         >
           {isSubmitting ? "Signing in..." : "Sign in"}
+          {!isSubmitting && <HiArrowNarrowRight />}
         </button>
       </form>
+
+      <p className="rise rise-3 flex items-center gap-1.5 text-neutral-500 text-xs mt-6">
+        <HiOutlineLockClosed size={13} />
+        Your identity never touches the blockchain — only a salted hash does.
+      </p>
     </div>
   );
 };

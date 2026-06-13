@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { HiArrowNarrowLeft, HiArrowNarrowRight } from "react-icons/hi";
+import {
+  HiArrowNarrowLeft,
+  HiArrowNarrowRight,
+  HiCheck,
+  HiOutlineDownload,
+  HiOutlineShieldCheck,
+} from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { jsPDF } from "jspdf";
@@ -23,27 +29,42 @@ const clearVoterSession = () => {
   localStorage.removeItem("voterInfo");
 };
 
+/** Mono step marker, like a numbered field on an official form. */
+function StepMarker({ step, label }) {
+  return (
+    <p className="stamp text-teal-600">
+      step {step} / 04 — {label}
+    </p>
+  );
+}
+
 export function VotersWelcome() {
   const navigate = useNavigate();
   const voter = getVoterInfo();
   const firstname = voter && voter.firstname ? voter.firstname : "Voter";
 
   return (
-    <div className="mt-52 flex flex-col items-center">
-      <p className="font-bold text-5xl sm:text-7xl">
-        Welcome {firstname.charAt(0).toUpperCase() + firstname.slice(1)}
-      </p>
-      <p className="text-neutral-500 text-lg sm:text-4xl font-normal">
-        Let's walk you through the voting process
+    <div className="flex-1 flex flex-col justify-center items-center text-center max-w-3xl py-16">
+      <div className="rise">
+        <StepMarker step="01" label="welcome" />
+      </div>
+      <h1 className="rise rise-1 font-display font-bold text-5xl sm:text-7xl mt-5 tracking-tight">
+        Welcome,{" "}
+        <span className="text-teal-500">
+          {firstname.charAt(0).toUpperCase() + firstname.slice(1)}
+        </span>
+      </h1>
+      <p className="rise rise-2 text-neutral-500 text-lg sm:text-2xl font-normal mt-4 leading-relaxed">
+        Let's walk you through the voting process.
       </p>
       {voter && voter.hasVoted && (
-        <p className="text-amber-500 text-base sm:text-xl font-normal mt-6">
+        <p className="rise rise-3 text-amber-500 text-sm sm:text-base mt-6 border border-amber-500/30 bg-amber-500/5 px-4 py-2">
           Our records show you have already cast your ballot for this election.
         </p>
       )}
       <button
         onClick={() => navigate("info")}
-        className="flex gap-2 items-center w-32 h-14 bg-teal-600 justify-center mt-[220px] text-base font-bold"
+        className="rise rise-3 btn-primary w-36 h-14 mt-16 text-base"
       >
         Next <HiArrowNarrowRight />
       </button>
@@ -83,26 +104,30 @@ export function ElectionInfo() {
   };
 
   return (
-    <div className="mt-[220px] flex flex-col items-center text-center">
-      <p className="font-bold text-5xl sm:text-7xl uppercase">
+    <div className="flex-1 flex flex-col justify-center items-center text-center max-w-4xl py-16">
+      <div className="rise">
+        <StepMarker step="02" label="your election" />
+      </div>
+      <h1 className="rise rise-1 font-display font-bold text-4xl sm:text-7xl uppercase mt-5 tracking-tight">
         {election ? election.name : "Loading election..."}
-      </p>
-      <p className="text-neutral-500 text-lg sm:text-4xl font-normal">
-        Time to choose your preferred candidate
+      </h1>
+      <p className="rise rise-2 text-neutral-500 text-lg sm:text-2xl font-normal mt-4">
+        Time to choose your preferred candidates.
       </p>
       {election && election.from && election.to && (
-        <p className="text-neutral-500 text-base sm:text-xl font-normal mt-4">
-          Voting opens {formatDate(election.from)} and closes{" "}
-          {formatDate(election.to)}
+        <p className="rise rise-3 hash text-neutral-500 mt-6 dark:border-neutral-800 border-neutral-300 border px-4 py-2">
+          open {formatDate(election.from)} — closes {formatDate(election.to)}
         </p>
       )}
-      {error && <p className="text-red-500 text-base mt-4">{error}</p>}
+      {error && (
+        <p role="alert" className="text-red-500 text-base mt-6">
+          {error}
+        </p>
+      )}
       <button
-        onClick={() => {
-          navigate("/voters/vote");
-        }}
+        onClick={() => navigate("/voters/vote")}
         disabled={!election}
-        className="flex gap-2 items-center w-32 h-14 bg-teal-600 justify-center mt-[180px] text-base font-bold disabled:opacity-50"
+        className="rise rise-4 btn-primary w-36 h-14 mt-16 text-base"
       >
         Next <HiArrowNarrowRight />
       </button>
@@ -186,42 +211,73 @@ export function Vote() {
 
   if (loading) {
     return (
-      <p className="mt-52 text-neutral-500 text-2xl text-center">
+      <p className="flex-1 flex items-center text-neutral-500 text-xl">
         Loading candidates...
       </p>
     );
   }
   if (error) {
-    return <p className="mt-52 text-red-500 text-2xl text-center">{error}</p>;
+    return (
+      <p role="alert" className="flex-1 flex items-center text-red-500 text-xl">
+        {error}
+      </p>
+    );
   }
   if (sections.length === 0) {
     return (
-      <p className="mt-52 text-neutral-500 text-2xl text-center">
+      <p className="flex-1 flex items-center text-neutral-500 text-xl text-center">
         No candidates have been registered for this election yet.
       </p>
     );
   }
 
   return (
-    <div className="mt-4 flex flex-col items-center">
+    <div className="flex-1 flex flex-col justify-center items-center text-center py-10 w-full">
       {currentSection && (
         <>
-          <p className="font-bold text-5xl sm:text-[77px]">
+          <div className="rise">
+            <StepMarker step="03" label="cast your ballot" />
+          </div>
+          <p className="rise rise-1 stamp text-neutral-500 mt-5">
+            position {currentSectionIndex + 1} of {sections.length}
+          </p>
+          <h1 className="rise rise-1 font-display font-bold text-4xl sm:text-6xl mt-2 tracking-tight">
             {currentSection.title}
+          </h1>
+          <div className="rise rise-2 w-full">
+            <Carousel
+              key={currentSection.title}
+              data={currentSection.data}
+              onSelect={handleCandidateSelect}
+            />
+          </div>
+          <p className="rise rise-3 text-neutral-500 text-lg font-normal">
+            {hasSelectionForSection
+              ? "Selection recorded — you can still change it."
+              : "Choose your preferred candidate."}
           </p>
-          <Carousel
-            key={currentSection.title}
-            data={currentSection.data}
-            onSelect={handleCandidateSelect}
-          />
-          <p className="text-neutral-500 text-[28px] font-normal">
-            Choose your preferred candidate
-          </p>
-          <div className="flex gap-5 mt-5">
+
+          {/* Position progress dots */}
+          <div className="rise rise-3 flex gap-2 mt-6" aria-hidden="true">
+            {sections.map((section, index) => (
+              <span
+                key={section.title}
+                className={`h-1.5 transition-all duration-300 ${
+                  index === currentSectionIndex
+                    ? "w-8 bg-teal-500"
+                    : selectedCandidates[section.title]
+                      ? "w-4 bg-teal-700"
+                      : "w-4 dark:bg-neutral-700 bg-neutral-300"
+                }`}
+              />
+            ))}
+          </div>
+
+          <div className="rise rise-4 flex gap-4 mt-8">
             {currentSectionIndex > 0 && (
               <button
                 onClick={handlePrevious}
-                className="flex gap-2 items-center w-32 h-14 bg-teal-600 justify-center text-base font-bold"
+                className="btn-ghost w-36 h-14 text-base"
               >
                 <HiArrowNarrowLeft /> Previous
               </button>
@@ -230,7 +286,7 @@ export function Vote() {
               <button
                 onClick={handleNext}
                 disabled={!hasSelectionForSection}
-                className="flex gap-2 items-center w-32 h-14 bg-teal-600 justify-center text-base font-bold text-white disabled:opacity-50"
+                className="btn-primary w-36 h-14 text-base"
               >
                 Next <HiArrowNarrowRight />
               </button>
@@ -238,7 +294,7 @@ export function Vote() {
               <button
                 onClick={handleContinue}
                 disabled={!hasSelectionForSection}
-                className="flex gap-2 items-center w-32 h-14 bg-teal-600 justify-center text-base font-bold text-white disabled:opacity-50"
+                className="btn-primary w-36 h-14 text-base"
               >
                 Continue <HiArrowNarrowRight />
               </button>
@@ -297,51 +353,80 @@ export function VoterSelect() {
   };
 
   return (
-    <div className="flex flex-col items-center pt-28 w-screen h-screen overflow-hidden dark:text-white dark:bg-black bg-cover bg-center">
-      <div className="flex items-center gap-3">
-        <img src={LOGO} alt="blockvote" className="h-4" />
-        <h1 className="text-xl font-bold">blockvote</h1>
+    <div className="bg-ledger flex flex-col items-center w-full min-h-dvh dark:text-white text-neutral-900 px-6 py-12">
+      <div className="flex items-center gap-2.5">
+        <img src={LOGO} alt="" className="h-4" />
+        <span className="text-xl font-bold font-display tracking-tight">
+          blockvote
+        </span>
       </div>
-      <p className="mt-8 text-neutral-500 text-xl">
-        Review your selections before casting your ballot
-      </p>
-      <div className="mt-11 w-96 sm:w-auto">
-        {selections.map((item) => {
-          return (
-            <div className="flex gap-4" key={item._id}>
-              <p className="w-36 sm:w-60 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
-                {item.position}
-              </p>
-              <p className="w-56 sm:w-auto opacity-50 text-neutral-500 text-3xl font-semibold font-['Outfit'] tracking-wide truncate">
-                {" "}
+
+      <div className="flex-1 flex flex-col justify-center items-center w-full max-w-2xl">
+        <div className="rise text-center">
+          <StepMarker step="04" label="review and seal" />
+          <h1 className="font-display font-bold text-4xl sm:text-6xl mt-5 tracking-tight">
+            Review your ballot
+          </h1>
+          <p className="text-neutral-500 text-base sm:text-lg mt-3">
+            Once cast, your ballot is sealed on the blockchain and cannot be
+            changed.
+          </p>
+        </div>
+
+        <div className="rise rise-2 w-full mt-10 border dark:border-neutral-800 border-neutral-300 dark:bg-black/40 bg-white/60">
+          {selections.map((item, index) => (
+            <div
+              key={item._id}
+              className={`flex items-center justify-between gap-4 px-5 sm:px-7 py-4 ${
+                index > 0
+                  ? "border-t dark:border-neutral-800 border-neutral-300"
+                  : ""
+              }`}
+            >
+              <p className="stamp text-neutral-500 shrink-0">{item.position}</p>
+              <p className="font-display text-lg sm:text-2xl font-semibold tracking-tight text-right truncate">
                 {item.firstname.charAt(0).toUpperCase() +
                   item.firstname.slice(1)}{" "}
                 {item.lastname.charAt(0).toUpperCase() + item.lastname.slice(1)}
               </p>
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        {error && (
+          <p
+            role="alert"
+            className="text-red-500 text-sm mt-6 max-w-xl text-center border border-red-500/30 bg-red-500/5 px-4 py-2"
+          >
+            {error}
+          </p>
+        )}
+
+        <button
+          className="rise rise-3 btn-primary w-48 h-14 mt-10 text-base"
+          disabled={submitting}
+          onClick={castBallot}
+        >
+          {submitting ? "Sealing..." : "Cast ballot"}
+          {!submitting && <HiArrowNarrowRight />}
+        </button>
+        {submitting && (
+          <p className="text-neutral-500 text-sm mt-4" aria-live="polite">
+            Recording your ballot on the blockchain. This can take a few
+            seconds.
+          </p>
+        )}
       </div>
+    </div>
+  );
+}
 
-      {error && (
-        <p className="text-red-500 text-base mt-8 max-w-xl text-center">
-          {error}
-        </p>
-      )}
-
-      <button
-        className="w-44 h-14 px-6 py-4 bg-teal-600 justify-center items-center mt-[80px] text-white flex gap-2 disabled:opacity-50"
-        disabled={submitting}
-        onClick={castBallot}
-      >
-        {submitting ? "Recording..." : "Cast ballot"}
-        {!submitting && <HiArrowNarrowRight />}
-      </button>
-      {submitting && (
-        <p className="text-neutral-500 text-sm mt-4">
-          Recording your ballot on the blockchain. This can take a few seconds.
-        </p>
-      )}
+/** One labelled mono row on the receipt stub. */
+function ReceiptField({ label, value }) {
+  return (
+    <div className="px-6 sm:px-8 py-3 border-t dark:border-neutral-800 border-neutral-300">
+      <p className="stamp text-neutral-500">{label}</p>
+      <p className="hash dark:text-teal-300 text-teal-700 mt-1">{value}</p>
     </div>
   );
 }
@@ -407,84 +492,93 @@ export function VotingEnd() {
   };
 
   return (
-    <div className="flex flex-col items-center w-screen min-h-screen overflow-auto dark:text-white bg-[url('./assets/bge.png')] dark:bg-black bg-cover bg-center pb-16">
-      <div className="flex gap-2 items-center mt-11">
-        <img src={LOGO} alt="blockvote" className="h-4 mt-2" />
-        <h1 className="text-xl font-bold mt-2">blockvote</h1>
+    <div className="bg-ledger flex flex-col items-center w-full min-h-dvh dark:text-white text-neutral-900 px-6 py-12">
+      <div className="flex items-center gap-2.5">
+        <img src={LOGO} alt="" className="h-4" />
+        <span className="text-xl font-bold font-display tracking-tight">
+          blockvote
+        </span>
       </div>
-      <p className="text-teal-600 text-7xl sm:text-[180px] font-black font-[Outfit] text-center mt-20">
-        Voted
-      </p>
-      <p className="text-neutral-400 text-xl font-normal font-[Outfit] tracking-wide text-center">
-        Your ballot has been cast
-      </p>
 
-      {receipt && (
-        <div className="mt-10 w-[90%] max-w-2xl border border-neutral-700 rounded-lg p-6 text-left break-all">
-          <p className="text-teal-600 text-lg font-bold mb-4">
-            Blockchain receipt
-          </p>
-          <p className="text-sm text-neutral-400 mb-2">
-            <span className="font-semibold text-neutral-300">
-              Transaction hash:{" "}
-            </span>
-            {receipt.transactionHash}
-          </p>
-          <p className="text-sm text-neutral-400 mb-2">
-            <span className="font-semibold text-neutral-300">
-              Block number:{" "}
-            </span>
-            {receipt.blockNumber}
-          </p>
-          <p className="text-sm text-neutral-400 mb-2">
-            <span className="font-semibold text-neutral-300">Voter hash: </span>
-            {receipt.voterHash}
-          </p>
-          <p className="text-sm text-neutral-400 mb-2">
-            <span className="font-semibold text-neutral-300">
-              Ballot receipt:{" "}
-            </span>
-            {receipt.ballotReceipt}
-          </p>
-          <p className="text-xs text-neutral-500 mt-4">
-            Keep this receipt: it proves your ballot is recorded on the
-            blockchain exactly as you cast it, without revealing your identity.
-          </p>
-
-          <div className="flex flex-wrap gap-4 mt-6">
-            <button
-              className="h-12 px-6 bg-teal-600 text-white text-sm font-bold"
-              onClick={downloadReceipt}
-            >
-              Download receipt (PDF)
-            </button>
-            <button
-              className="h-12 px-6 border border-teal-600 text-teal-600 text-sm font-bold disabled:opacity-50"
-              disabled={verifying}
-              onClick={verifyBallot}
-            >
-              {verifying ? "Verifying..." : "Verify on blockchain"}
-            </button>
-          </div>
-
-          {verification && (
-            <p
-              className={`text-sm mt-4 ${
-                verification.valid ? "text-teal-500" : "text-red-500"
-              }`}
-            >
-              {verification.message}
-            </p>
-          )}
+      <div className="flex-1 flex flex-col justify-center items-center w-full max-w-2xl py-10">
+        <div className="rise stamp-in flex items-center justify-center gap-2 border-2 border-teal-500 text-teal-500 px-5 py-2 -rotate-2">
+          <HiCheck size={20} />
+          <span className="stamp text-base">voted</span>
         </div>
-      )}
+        <h1 className="rise rise-1 font-display font-bold text-4xl sm:text-6xl mt-7 tracking-tight text-center">
+          Your ballot is sealed
+        </h1>
+        <p className="rise rise-2 text-neutral-500 text-base sm:text-lg mt-3 text-center">
+          {receipt
+            ? "Recorded on the blockchain — keep the receipt below."
+            : "Your ballot has been recorded."}
+        </p>
 
-      <button
-        className="w-40 h-14 px-6 py-4 bg-teal-600 mt-10 text-white"
-        onClick={goHome}
-      >
-        Back to Home
-      </button>
+        {receipt && (
+          <div className="rise rise-3 w-full mt-10 border dark:border-neutral-800 border-neutral-300 dark:bg-black/40 bg-white/70">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-4">
+              <p className="stamp dark:text-white text-neutral-900">
+                ballot receipt
+              </p>
+              <p className="hash text-neutral-500">
+                block #{receipt.blockNumber}
+              </p>
+            </div>
+            <div className="perforation dark:text-white text-neutral-900 mx-4" />
+            <ReceiptField
+              label="transaction hash"
+              value={receipt.transactionHash}
+            />
+            <ReceiptField label="voter hash" value={receipt.voterHash} />
+            <ReceiptField
+              label="ballot receipt"
+              value={receipt.ballotReceipt}
+            />
+            <div className="px-6 sm:px-8 py-4 border-t dark:border-neutral-800 border-neutral-300">
+              <p className="text-xs text-neutral-500 leading-relaxed">
+                This receipt proves your ballot is recorded on the blockchain
+                exactly as you cast it — without revealing your identity.
+              </p>
+              <div className="flex flex-wrap gap-3 mt-5">
+                <button
+                  className="btn-primary h-12 px-5 text-sm"
+                  onClick={downloadReceipt}
+                >
+                  <HiOutlineDownload size={16} />
+                  Download PDF
+                </button>
+                <button
+                  className="btn-ghost h-12 px-5 text-sm"
+                  disabled={verifying}
+                  onClick={verifyBallot}
+                >
+                  <HiOutlineShieldCheck size={16} />
+                  {verifying ? "Verifying..." : "Verify on blockchain"}
+                </button>
+              </div>
+              {verification && (
+                <p
+                  role="status"
+                  className={`text-sm mt-4 px-3 py-2 border ${
+                    verification.valid
+                      ? "text-teal-500 border-teal-500/30 bg-teal-500/5"
+                      : "text-red-500 border-red-500/30 bg-red-500/5"
+                  }`}
+                >
+                  {verification.message}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <button
+          className="rise rise-4 btn-ghost w-44 h-12 mt-10 text-sm"
+          onClick={goHome}
+        >
+          Back to Home
+        </button>
+      </div>
     </div>
   );
 }

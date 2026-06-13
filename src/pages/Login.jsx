@@ -1,76 +1,65 @@
 import React, { useEffect, useState } from "react";
-import METAMASK_ICON from "../assets/metamask-icon.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { signInSchema } from "../schemas";
 import classNames from "classnames";
+import { HiArrowNarrowRight } from "react-icons/hi";
 import client from "../api/client";
 
 const inputStyles =
-  "w-full h-11 text-black py-2 my-2 bg-transparent rounded-md border border-black/40 pl-2";
-const Login = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [userAuth, setUserAuth] = useState(null);
-  const [userToken, setUserToken] = useState(null);
-  const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate();
-  const myHeaders = {
-    "Content-Type": "application/json",
-  };
+  "w-full h-12 px-3 mt-2 text-black bg-white/70 border border-neutral-400 " +
+  "placeholder:text-neutral-400 focus:border-teal-600 focus:outline-none transition-colors";
 
-  const requestOptions = {
-    headers: myHeaders,
-  };
+const Login = () => {
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const onSubmit = async (values, actions) => {
-    setUserAuth(true);
-    console.log(values);
+    setError(null);
     try {
-      const res = await client.post("organization/signin", {
-        ...values,
-      }, requestOptions);
+      const res = await client.post("organization/signin", { ...values });
 
       if (res.data.organization.isVerified === true && res.status === 200) {
         let token = res.data.token;
         let refreshToken = res.data.refreshToken;
         let userinfo = res.data.organization;
-        setUserInfo(userinfo);
-        setUserToken(token);
         if (token != null && userinfo != null) {
-          let auth = true
-          localStorage.setItem("isAuthenticated", auth)
+          localStorage.setItem("isAuthenticated", true);
           localStorage.setItem("rememberMe", rememberMe);
           localStorage.setItem("token", JSON.stringify(token));
           localStorage.setItem("userInfo", JSON.stringify(userinfo));
           localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
-          // navigate("/voters", { replace: true, });
-          navigate("/dashboard", { replace: true, });
+          navigate("/dashboard", { replace: true });
         }
       } else if (
         res.data.organization.isVerified === false &&
         res.status === 200
       ) {
         let userinfo = res.data.organization;
-        setUserInfo(userinfo);
         localStorage.setItem("userInfo", JSON.stringify(userinfo));
-        navigate("/organization/otp", { replace: true });
+        navigate("/organization/otp", {
+          replace: true,
+          state: { username: values.email, password: values.password },
+        });
       }
     } catch (e) {
-      console.log(e);
-    } finally {
+      setError(
+        (e.response && e.response.data && e.response.data.message) ||
+          "Unable to sign in. Please check your credentials."
+      );
     }
-    // console.log(actions);
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
+    actions.setSubmitting(false);
   };
 
   useEffect(() => {
     const rem = localStorage.getItem("rememberMe");
     if (rem === "true") {
-      console.log(rem);
       navigate("/dashboard", { replace: true });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const {
     values,
     errors,
@@ -88,100 +77,112 @@ const Login = () => {
     onSubmit,
   });
 
-  console.log(errors);
   return (
-    <div className="w-full flex flex-col max-w-[500px] py-[20%]">
-      <div className="w-full flex flex-col mb-2">
-        <h3 className="text-3xl font-semibold mb-4">Welcome to blockvote 👋</h3>
-
-        <div className="w-full py-4 my-2 text-[#060606] bg-transparent border border-black/40 font-semibold rounded-md p-2 text-center flex items-center justify-center cursor-pointer">
-          Continue with Metamask
-          <img src={METAMASK_ICON} alt="metamask" className="h-4 ml-2" />
-        </div>
-
-        <div className="w-full flex items-center justify-center relative py-[7%]">
-          <div className="w-full h-[1px] bg-black"></div>
-          <div className="w-[45px] text-[#F5F5F5] absolute bg-[#F5F5F5]">
-            <p className="text-sm w-[45px] text-black/80 ml-3"> OR</p>
-          </div>
-        </div>
-        <p className="text-base font-normal text-[#060606] mb-2">
+    <div className="w-full flex flex-col max-w-md py-12 text-[#060606]">
+      <div className="rise w-full flex flex-col mb-8">
+        <p className="stamp text-teal-600">organization access</p>
+        <h3 className="font-display text-4xl font-bold mt-3 tracking-tight">
+          Welcome back
+        </h3>
+        <p className="text-base font-normal text-neutral-500 mt-3">
           Don't have an account?
-          <Link to="signup">
-            <span className="text-[#00A699] cursor-pointer"> Sign up</span>
+          <Link to="signup" className="hover:no-underline">
+            <span className="text-teal-600 font-semibold cursor-pointer">
+              {" "}
+              Sign up
+            </span>
           </Link>
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} autoComplete="off">
-        <div className="w-full flex flex-col">
-          <div className="flex justify-between text-[17px]">
-            <p className="text-black  font-semibold">Email</p>
-            {/* {errors.password && touched.password && (
-              <p className="error text-red-600">{errors.password}</p>
-            )} */}
-          </div>
-          <input
-            value={values.email}
-            onChange={handleChange}
-            id="email"
-            type="email"
-            className={classNames(
-              inputStyles,
-              errors.email && touched.email ? "input-error" : ""
-            )}
-          />
+      <form
+        onSubmit={handleSubmit}
+        autoComplete="off"
+        className="rise rise-2 w-full"
+      >
+        <label htmlFor="email" className="stamp text-neutral-500 block">
+          Email
+        </label>
+        <input
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          id="email"
+          type="email"
+          autoComplete="email"
+          className={classNames(
+            inputStyles,
+            errors.email && touched.email ? "border-red-500" : ""
+          )}
+        />
+        {errors.email && touched.email && (
+          <p className="text-red-600 text-sm mt-1.5">{errors.email}</p>
+        )}
 
-          <div className="flex justify-between text-[17px]">
-            <p className="text-black  font-semibold">Password</p>
-            {/* {errors.password && touched.password && (
-              <p className="error text-red-600">{errors.password}</p>
-            )} */}
-          </div>
-          <input
-            id="password"
-            value={values.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            type="password"
-            className={classNames(
-              inputStyles,
-              errors.password && touched.password ? "input-error" : ""
-            )}
-          />
-        </div>
+        <label
+          htmlFor="password"
+          className="stamp text-neutral-500 block mt-6"
+        >
+          Password
+        </label>
+        <input
+          id="password"
+          value={values.password}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          type="password"
+          autoComplete="current-password"
+          className={classNames(
+            inputStyles,
+            errors.password && touched.password ? "border-red-500" : ""
+          )}
+        />
+        {errors.password && touched.password && (
+          <p className="text-red-600 text-sm mt-1.5">{errors.password}</p>
+        )}
 
-        <div className="w-full flex items-center justify-between mt-4">
-          <div className="w-full flex items-center">
+        <div className="w-full flex items-center justify-between mt-6">
+          <label className="flex items-center cursor-pointer">
             <input
               checked={rememberMe}
-              onClick={() => setRememberMe(!rememberMe)}
+              onChange={() => setRememberMe(!rememberMe)}
               type="checkbox"
-              className={`w-4 h-4 mr-2 ${
-                rememberMe === true && "bg-teal-600 text-teal-600"
-              }`}
+              className="w-4 h-4 mr-2 accent-teal-600"
             />
-            <p className="text-sm">Remember Me</p>
-          </div>
-          <Link to="forgotpassword">
-            <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline underline-offset-2">
-              Forgot Password?
-            </p>
+            <span className="text-sm">Remember me</span>
+          </label>
+          <Link to="forgotpassword" className="hover:no-underline">
+            <span className="text-sm font-medium text-neutral-500 hover:text-teal-600 cursor-pointer">
+              Forgot password?
+            </span>
           </Link>
         </div>
 
-        <div className="w-full flex flex-col my-4">
-          {/* <Link to={"dashboard"}> */}
-          <button
-            disabled={isSubmitting}
-            type="submit"
-            className="w-full my-2 text-white bg-[#00A699] font-semibold  rounded-md p-2 text-center flex items-center justify-center"
+        {error && (
+          <p
+            role="alert"
+            className="text-red-600 text-sm mt-5 text-center border border-red-300 bg-red-50 px-3 py-2"
           >
-            Sign in
-          </button>
-          {/* </Link> */}
-        </div>
+            {error}
+          </p>
+        )}
+
+        <button
+          disabled={isSubmitting}
+          type="submit"
+          className="btn-primary w-full h-12 mt-8 text-base"
+        >
+          {isSubmitting ? "Signing in..." : "Sign in"}
+          {!isSubmitting && <HiArrowNarrowRight />}
+        </button>
       </form>
+
+      <p className="rise rise-3 text-sm text-neutral-500 mt-8 text-center">
+        Voting in an election?{" "}
+        <Link to="/voters/login" className="hover:no-underline">
+          <span className="text-teal-600 font-semibold">Voter sign in</span>
+        </Link>
+      </p>
     </div>
   );
 };

@@ -9,7 +9,7 @@ import classNames from "classnames";
 import client from "../api/client";
 
 const inputStyles =
-  "w-[350px] h-11 text-white py-2 my-2 bg-transparent rounded-md border border-white pl-2";
+  "w-[350px] h-11 text-white py-2 my-2 bg-transparent rounded-md border border-neutral-600 focus:border-teal-500 focus:outline-none transition-colors pl-2";
 
 export default function Voters() {
   const [open, setOpen] = useState(false);
@@ -186,7 +186,7 @@ export default function Voters() {
   };
   return (
     <div className="text-white w-full flex-grow relative">
-      <div className="w-full h-full my-16 border border-white rounded-lg items-center pl-12 py-7">
+      <div className="w-full h-full my-16 border border-neutral-800 bg-[#0c0c0c] rounded-lg items-center pl-12 py-7">
         <div className="flex flex-col">
           <div className="flex justify-between">
             <input
@@ -311,22 +311,22 @@ export default function Voters() {
           <table className="table-fixed w-full h-full hover:text-gray-100">
             <thead className="bg-transparent">
               <tr>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   ID
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Photo
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   First Name
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Last Name
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   email
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Action
                 </th>
               </tr>

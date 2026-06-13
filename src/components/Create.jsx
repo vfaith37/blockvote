@@ -18,7 +18,7 @@ import client from "../api/client";
 import { format } from "date-fns";
 
 const inputStyles =
-  "bg-transparent border-b border-white w-[340px] h-10 text-white";
+  "bg-transparent border-b border-neutral-600 focus:border-teal-500 focus:outline-none transition-colors w-[340px] h-10 text-white";
 
 export default function Create() {
   const [open, setOpen] = useState(false);
@@ -277,11 +277,11 @@ export default function Create() {
   };
   return (
     <div className="text-white w-full flex-grow relative">
-      <div className="w-full h-full my-16 border border-white rounded-lg items-center pl-12 py-7">
+      <div className="w-full h-full my-16 border border-neutral-800 bg-[#0c0c0c] rounded-lg items-center pl-12 py-7">
         <div className="flex flex-col">
           <button
             onClick={() => setOpen(true)}
-            className="flex gap-2 h-8 w-32 bg-green-900 rounded-lg items-center justify-center text-sm font-normal self-end mx-28"
+            className="flex gap-2 h-9 px-4 bg-teal-600 hover:bg-teal-500 rounded-lg items-center justify-center text-sm font-medium self-end mx-28"
           >
             Create Election <HiOutlineSave />
           </button>
@@ -414,19 +414,19 @@ export default function Create() {
           <table className="table-fixed w-full h-full hover:text-gray-100">
             <thead className="bg-transparent">
               <tr>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   ID
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Election Title
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Duration
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Description
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Action
                 </th>
               </tr>

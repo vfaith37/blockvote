@@ -8,7 +8,7 @@ import { HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
 
 const inputStyles =
-  "w-[350px] h-11 text-white py-2 my-2 bg-transparent rounded-md border border-white pl-2";
+  "w-[350px] h-11 text-white py-2 my-2 bg-transparent rounded-md border border-neutral-600 focus:border-teal-500 focus:outline-none transition-colors pl-2";
 
 const CandidateForm = ({ onSubmit, onClose, initialValues }) => {
   const fileRef = useRef(null);

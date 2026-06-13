@@ -113,50 +113,51 @@ export default function Header() {
   };
 
   return (
-    <div className="bg-[#060606] h-16 px-4 flex justify-between text-white items-center">
-      <div className="relative border border-gray-400  rounded-lg ">
+    <div className="bg-[#060606] border-b border-neutral-800 h-16 px-5 flex justify-between gap-4 text-white items-center">
+      <div className="relative border border-neutral-700 rounded-lg focus-within:border-teal-600 transition-colors">
         <HiOutlineSearch
-          fontSize={20}
-          className="absolute left-3 top-1/2 -translate-y-1/2"
+          fontSize={18}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"
         />
         <input
           type="text"
           placeholder="Search here"
-          className="h-10 active:outline-none focus:outline-none gap-2.5 w-[24rem] bg-transparent  text-white text-sm pl-11 pr-4"
+          className="h-10 focus:outline-none w-[16rem] lg:w-[24rem] bg-transparent text-white text-sm pl-10 pr-4 placeholder:text-neutral-500"
         />
       </div>
 
       {isConnected ? (
-        <>
+        <div className="flex items-center gap-3 min-w-0">
+          <p
+            className="hash text-teal-400 truncate max-w-[180px]"
+            title={account || ""}
+          >
+            {account}
+          </p>
           <button
-            className="flex w-28 h-10 justify-center bg-teal-600 rounded items-center font-medium text-base"
+            className="flex h-10 px-4 justify-center border border-neutral-700 hover:border-teal-600 text-neutral-300 rounded-lg items-center font-medium text-sm"
             onClick={onDisconnect}
           >
             Disconnect
           </button>
-          {account !== null && <p className="text-white left-[650px] top-14">Wallet Address: {account}</p>}
-        </>
+        </div>
       ) : (
-        <>
-          <button
-            onClick={() => connectToMetamask()}
-            className="gap-2 flex w-28 h-10 justify-center bg-teal-600 rounded items-center font-medium text-base"
-          >
-            connect
-          </button>
-        </>
+        <button
+          onClick={() => connectToMetamask()}
+          className="gap-2 flex h-10 px-4 justify-center bg-teal-600 hover:bg-teal-500 rounded-lg items-center font-medium text-sm"
+        >
+          Connect wallet
+        </button>
       )}
-      <div className="flex gap-4 items-center cursor-pointer">
-        <div className="flex flex-col">
-          <p className="text-white text-lg font-normal">{userInfo.name}</p>
-          <p className="text-teal-600 text-base font-semibold self-end">
-            Admin
-          </p>
+      <div className="flex gap-3 items-center cursor-pointer">
+        <div className="flex flex-col items-end">
+          <p className="text-white text-sm font-semibold">{userInfo.name}</p>
+          <p className="stamp text-teal-500">admin</p>
         </div>
         <img
           src={PROFILE_IMAGE}
           alt="profile"
-          className="w-10 h-10 rounded-full object-cover"
+          className="w-9 h-9 rounded-full object-cover ring-1 ring-neutral-700"
         />
       </div>
     </div>

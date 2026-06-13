@@ -25,7 +25,7 @@ export default function Overview() {
         </button>
       </div>
 
-      <div className="my-10 border border-white rounded-xl p-6">
+      <div className="my-10 border border-neutral-800 bg-[#0c0c0c] rounded-xl p-6">
         <BarChart />
       </div>
 
@@ -35,19 +35,19 @@ export default function Overview() {
           <table className="table-fixed w-full h-full hover:text-gray-100">
             <thead className="bg-transparent">
               <tr>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   ID
                 </th>
-                <th className="border-0  px-6 text-stone-600 text-base font-medium">
+                <th className="border-0  px-6 stamp text-neutral-500">
                   Name
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Time
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Date
                 </th>
-                <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                <th className="border-0 px-6 stamp text-neutral-500">
                   Process
                 </th>
               </tr>
@@ -67,7 +67,7 @@ export default function Overview() {
                     </td>
                     <td className="border-0 px-6 align-middle text-white text-sm font-medium"></td>
                     <td className="border-0 px-6 align-middle">
-                      <div className="bg-transparent border-red-600 border items-center flex justify-center text-red-600 rounded-lg w-16 h-8 text-xs font-medium gap-1">
+                      <div className="bg-teal-500/10 border-teal-600 border items-center flex justify-center text-teal-500 rounded-lg w-16 h-8 text-xs font-medium gap-1">
                         Voted
                       </div>
                     </td>
@@ -84,20 +84,27 @@ export default function Overview() {
               return (
                 <div
                   key={item.title}
-                  className={classNames(
-                    item.status === "Ongoing"
-                      ? "bg-green-700"
-                      :  item.status === "Pending"
-                      ? "bg-teal-600"
-                      : "bg-red-700",
-                    "w-[95%] h-20 px-5 py-3 my-4 rounded-lg justify-between flex items-center"
-                  )}
+                  className="w-[95%] h-20 px-5 py-3 my-4 rounded-lg justify-between flex items-center border border-neutral-800 bg-[#0c0c0c]"
                 >
                   <div className="flex flex-col gap-1">
-                    <p className="text-2xl font-bold">{item.title}</p>
-                    <p className="text-xs font-light">{item.type}</p>
+                    <p className="text-xl font-bold font-display tracking-tight">
+                      {item.title}
+                    </p>
+                    <p className="stamp text-neutral-500">{item.type}</p>
                   </div>
-                  <p>{item.status}</p>
+                  <p
+                    className={classNames(
+                      item.status === "Ongoing"
+                        ? "text-green-500 border-green-600 bg-green-500/10"
+                        : item.status === "Pending"
+                          ? "text-teal-400 border-teal-600 bg-teal-500/10"
+                          : "text-red-500 border-red-600 bg-red-500/10",
+                      "flex items-center gap-2 text-xs font-medium border rounded-lg px-3 py-1.5"
+                    )}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    {item.status}
+                  </p>
                 </div>
               );
             })}
@@ -114,13 +121,13 @@ export default function Overview() {
             <table className="table-fixed w-full h-full hover:text-gray-100">
               <thead className="bg-transparent">
                 <tr>
-                  <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  <th className="border-0 px-6 stamp text-neutral-500">
                     Name
                   </th>
-                  <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  <th className="border-0 px-6 stamp text-neutral-500">
                     Position
                   </th>
-                  <th className="border-0 px-6 text-stone-600 text-base font-medium">
+                  <th className="border-0 px-6 stamp text-neutral-500">
                     Vote
                   </th>
                 </tr>
