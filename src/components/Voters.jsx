@@ -18,9 +18,17 @@ export default function Voters() {
   const [voterData, setVoterData] = useState([]);
   const [voterToDelete, setVoterToDelete] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const electionId = localStorage.getItem("electionId");
+  const [error, setError] = useState(null);
+
+  const rawElectionId = localStorage.getItem("electionId");
+  // localStorage can hold the literal "null"/"undefined" strings.
+  const electionId =
+    rawElectionId && rawElectionId !== "null" && rawElectionId !== "undefined"
+      ? rawElectionId
+      : null;
 
   const refreshVoters = async () => {
+    if (!electionId) return;
     try {
       const res = await client.get(`voter/getAllVoters/${electionId}`);
       if (res.status === 200) setVoterData(res.data.data);
@@ -30,6 +38,11 @@ export default function Voters() {
   };
 
   const onSubmit = async (values, actions) => {
+    if (!electionId) {
+      setError("Create or select an election before adding voters.");
+      return;
+    }
+    setError(null);
     try {
       // Registers a single voter; the server generates and emails their
       // password, so we only send identity fields.
@@ -41,7 +54,10 @@ export default function Voters() {
         await refreshVoters();
       }
     } catch (error) {
-      console.error("Error registering voter:", error);
+      setError(
+        (error.response && error.response.data && error.response.data.message) ||
+          "Failed to register voter."
+      );
     } finally {
       onClose();
       actions.resetForm();
@@ -72,6 +88,11 @@ export default function Voters() {
     enableReinitialize: true,
   });
   const handleFileUpload = (event) => {
+    if (!electionId) {
+      setError("Create or select an election before uploading voters.");
+      return;
+    }
+    setError(null);
     const file = event.target.files[0];
     setLoading(true);
     Papa.parse(file, {
@@ -152,6 +173,20 @@ export default function Voters() {
   };
   return (
     <div className="text-white w-full flex-grow relative">
+      {!electionId && (
+        <div className="mt-6 mx-12 border border-amber-500/40 bg-amber-500/10 text-amber-300 rounded-lg px-4 py-3 text-sm">
+          No election selected. Create an election (Create tab) and pick it in
+          the header before adding voters.
+        </div>
+      )}
+      {error && (
+        <p
+          role="alert"
+          className="mt-4 mx-12 text-red-400 text-sm border border-red-500/30 bg-red-500/10 rounded-lg px-4 py-2"
+        >
+          {error}
+        </p>
+      )}
       <div className="w-full h-full my-16 border border-neutral-800 bg-[#0c0c0c] rounded-lg items-center pl-12 py-7">
         <div className="flex flex-col">
           <div className="flex justify-between">
