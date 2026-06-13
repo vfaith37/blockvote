@@ -16,6 +16,7 @@ import Candidates from "./components/Candidates";
 import Create from "./components/Create";
 import Landing from "./pages/Landing";
 import VoterLayout from "./components/shared/VoterLayout";
+import VoterLogin from "./pages/VoterLogin";
 import {
   VotersWelcome,
   ElectionInfo,
@@ -23,10 +24,17 @@ import {
   VotingEnd,
   VoterSelect,
 } from "./components/VotersWelcome";
-import { useState } from "react";
 import ErrorPage from "./components/ErrorPage";
 import Voters from "./components/Voters";
-// import Layout from "./components/shared/layout";
+
+// Voter pages require the JWT issued by /voter/login.
+function RequireVoter({ children }) {
+  const voterToken = localStorage.getItem("voterToken");
+  if (!voterToken) {
+    return <Navigate to="/voters/login" replace />;
+  }
+  return children;
+}
 
 function App() {
   return (
@@ -36,13 +44,41 @@ function App() {
           <Route path="/" element={<Landing />}></Route>
 
           <Route path="voters" element={<VoterLayout />}>
-            {/* {isAuthenticated ? null : <Navigate to="/organization/login" />} */}
-            <Route index element={<VotersWelcome />}></Route>
-            <Route path="info" element={<ElectionInfo />}></Route>
-            <Route path="vote" element={<Vote />}></Route>
+            <Route path="login" element={<VoterLogin />}></Route>
+            <Route
+              index
+              element={
+                <RequireVoter>
+                  <VotersWelcome />
+                </RequireVoter>
+              }
+            ></Route>
+            <Route
+              path="info"
+              element={
+                <RequireVoter>
+                  <ElectionInfo />
+                </RequireVoter>
+              }
+            ></Route>
+            <Route
+              path="vote"
+              element={
+                <RequireVoter>
+                  <Vote />
+                </RequireVoter>
+              }
+            ></Route>
           </Route>
           <Route path="votingend" element={<VotingEnd />}></Route>
-          <Route path="voterselect" element={<VoterSelect />}></Route>
+          <Route
+            path="voterselect"
+            element={
+              <RequireVoter>
+                <VoterSelect />
+              </RequireVoter>
+            }
+          ></Route>
 
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Overview />}></Route>

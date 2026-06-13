@@ -28,6 +28,12 @@ export default function Create() {
   const [selectedElection, setSelectedElection] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showFinalizeConfirm, setShowFinalizeConfirm] = useState(false);
+  const [finalizing, setFinalizing] = useState(false);
+  const [showAudit, setShowAudit] = useState(false);
+  const [auditResult, setAuditResult] = useState(null);
+  const [auditError, setAuditError] = useState(null);
+  const [actionMessage, setActionMessage] = useState(null);
   const orgData = JSON.parse(localStorage.getItem("userInfo"))._id;
   const electionId = localStorage.getItem("electionId");
   const [edit, setEdit] = useState(false);
@@ -167,6 +173,52 @@ export default function Create() {
       }
     } catch (error) {
       console.error("Error deleting election:", error);
+    }
+  };
+
+  const handleFinalize = (electionId) => {
+    setSelectedElection(electionId);
+    setActionMessage(null);
+    setShowFinalizeConfirm(true);
+  };
+
+  const confirmFinalize = async () => {
+    setFinalizing(true);
+    try {
+      const res = await client.post(
+        `election/finalizeElection/${selectedElection}`
+      );
+      setActionMessage({ ok: true, text: res.data.message });
+    } catch (error) {
+      setActionMessage({
+        ok: false,
+        text:
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          "Failed to finalize the election.",
+      });
+    } finally {
+      setFinalizing(false);
+      setShowFinalizeConfirm(false);
+      setSelectedElection(null);
+    }
+  };
+
+  const handleAudit = async (electionId) => {
+    setShowAudit(true);
+    setAuditResult(null);
+    setAuditError(null);
+    try {
+      const res = await client.get(`election/auditElection/${electionId}`);
+      setAuditResult(res.data);
+    } catch (error) {
+      setAuditError(
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+          "Failed to audit the election."
+      );
     }
   };
 
@@ -412,6 +464,18 @@ export default function Create() {
                           Delete
                           <HiOutlineTrash />
                         </button>
+                        <button
+                          onClick={() => handleAudit(item._id)}
+                          className="border border-teal-600 items-center flex justify-center text-teal-500 rounded-lg w-14 h-8 text-xs font-medium"
+                        >
+                          Audit
+                        </button>
+                        <button
+                          onClick={() => handleFinalize(item._id)}
+                          className="bg-amber-600 items-center flex justify-center text-gray-50 rounded-lg w-16 h-8 text-xs font-medium"
+                        >
+                          Finalize
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -419,6 +483,129 @@ export default function Create() {
               );
             })}
           </table>
+          {actionMessage && (
+            <p
+              className={`px-6 mt-4 text-sm font-medium ${
+                actionMessage.ok ? "text-teal-500" : "text-red-500"
+              }`}
+            >
+              {actionMessage.text}
+            </p>
+          )}
+          {showFinalizeConfirm && (
+            <Modal>
+              <div className="w-full flex flex-col justify-center items-center">
+                <div className="mt-10 text-3xl font-bold">Finalize</div>
+                <p className="text-xl mt-4 font-normal px-8 text-center">
+                  Finalize this election on the blockchain?
+                </p>
+                <p className="text-sm mt-4 font-normal text-neutral-500 px-8 text-center">
+                  Results become permanent and can never be changed. The
+                  election must already have ended.
+                </p>
+                <div className="flex justify-between my-4 gap-4">
+                  <button
+                    onClick={() => setShowFinalizeConfirm(false)}
+                    className="bg-gray-600 text-white rounded-lg px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmFinalize}
+                    disabled={finalizing}
+                    className="bg-amber-600 text-white rounded-lg px-4 py-2 disabled:opacity-50"
+                  >
+                    {finalizing ? "Finalizing..." : "Finalize"}
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          )}
+          {showAudit && (
+            <Modal>
+              <div className="w-full flex flex-col justify-center items-center px-8 pb-8">
+                <div className="mt-10 text-3xl font-bold">Election Audit</div>
+                {!auditResult && !auditError && (
+                  <p className="text-base mt-6 text-neutral-400">
+                    Comparing database tallies with the blockchain...
+                  </p>
+                )}
+                {auditError && (
+                  <p className="text-base mt-6 text-red-500 text-center">
+                    {auditError}
+                  </p>
+                )}
+                {auditResult && (
+                  <>
+                    <p
+                      className={`text-lg mt-4 font-semibold ${
+                        auditResult.consistent
+                          ? "text-teal-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {auditResult.consistent
+                        ? "✓ Database matches the blockchain"
+                        : "✗ Mismatch detected between database and blockchain"}
+                    </p>
+                    <p className="text-sm mt-2 text-neutral-400">
+                      {auditResult.election.name} — on-chain state:{" "}
+                      {auditResult.election.state} —{" "}
+                      {auditResult.election.totalBallots} ballot(s) cast
+                    </p>
+                    <table className="table-auto w-full mt-6">
+                      <thead>
+                        <tr>
+                          <th className="text-left text-stone-500 text-sm font-medium pb-2">
+                            Candidate
+                          </th>
+                          <th className="text-center text-stone-500 text-sm font-medium pb-2">
+                            Database
+                          </th>
+                          <th className="text-center text-stone-500 text-sm font-medium pb-2">
+                            Blockchain
+                          </th>
+                          <th className="text-center text-stone-500 text-sm font-medium pb-2">
+                            Match
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {auditResult.comparison.map((row) => (
+                          <tr key={row.candidateId}>
+                            <td className="text-white text-sm py-1">
+                              {row.name}
+                            </td>
+                            <td className="text-white text-sm py-1 text-center">
+                              {row.databaseVotes}
+                            </td>
+                            <td className="text-white text-sm py-1 text-center">
+                              {row.onChainVotes == null
+                                ? "—"
+                                : row.onChainVotes}
+                            </td>
+                            <td
+                              className={`text-sm py-1 text-center ${
+                                row.match ? "text-teal-500" : "text-red-500"
+                              }`}
+                            >
+                              {row.match ? "✓" : "✗"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                )}
+                <button
+                  onClick={() => setShowAudit(false)}
+                  className="bg-gray-600 text-white rounded-lg px-4 py-2 mt-8"
+                >
+                  Close
+                </button>
+              </div>
+            </Modal>
+          )}
           {showConfirmation && (
             <Modal>
               <div className="w-full flex flex-col justify-center items-center">

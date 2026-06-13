@@ -54,7 +54,9 @@ const Carousel = (props) => {
             {item.firstname.charAt(0).toUpperCase() + item.firstname.slice(1)}{" "}
             {item.lastname.charAt(0).toUpperCase() + item.lastname.slice(1)}
           </p>
-          <p className="mt-[7px] text-neutral-500 text-base">{item.course}</p>
+          <p className="mt-[7px] text-neutral-500 text-base">
+            {item.course || item.position || ""}
+          </p>
         </div>
       ))}
 
