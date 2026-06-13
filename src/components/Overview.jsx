@@ -136,7 +136,7 @@ export default function Overview() {
         <p className="mt-16 text-center text-neutral-500">Loading results...</p>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
             <StatCard
               icon={<HiOutlineUserGroup />}
               label="registered voters"
@@ -149,33 +149,42 @@ export default function Overview() {
             />
             <StatCard
               icon={<HiOutlineChartBar />}
+              label="ballots cast"
+              value={ballotsCast}
+            />
+            <StatCard
+              icon={<HiOutlineChartBar />}
               label={`turnout (${ballotsCast}/${voters.length})`}
               value={`${turnout}%`}
             />
           </div>
 
-          <div className="my-8 border border-neutral-800 bg-[#0c0c0c] rounded-xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className="text-lg font-bold font-display tracking-tight">
-                  Live results
-                </p>
-                <p className="stamp text-neutral-500 mt-1">
-                  {source === "chain"
-                    ? "● canonical — read from the blockchain"
-                    : "○ tally unavailable — election not on-chain"}
+          {/* Chart + standings side by side on wide screens */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            <div className="border border-neutral-800 bg-[#0c0c0c] rounded-xl p-6">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <p className="text-lg font-bold font-display tracking-tight">
+                    Live results
+                  </p>
+                  <p className="stamp text-neutral-500 mt-1">
+                    {source === "chain"
+                      ? "● canonical — read from the blockchain"
+                      : "○ tally unavailable — election not on-chain"}
+                  </p>
+                </div>
+                <p className="stamp text-neutral-500">
+                  {totalVotes} votes counted
                 </p>
               </div>
-              <p className="stamp text-neutral-500">{totalVotes} votes counted</p>
+              <BarChart labels={chartLabels} values={chartValues} />
             </div>
-            <BarChart labels={chartLabels} values={chartValues} />
-          </div>
 
-          <div className="rounded-lg bg-[#0c0c0c] border border-neutral-800 px-6 py-6">
-            <p className="text-lg font-bold font-display tracking-tight mb-2">
-              Candidate standings
-            </p>
-            <table className="table-fixed w-full">
+            <div className="rounded-xl bg-[#0c0c0c] border border-neutral-800 px-6 py-6">
+              <p className="text-lg font-bold font-display tracking-tight mb-4">
+                Candidate standings
+              </p>
+              <table className="table-fixed w-full">
               <thead>
                 <tr>
                   <th className="stamp text-neutral-500">Candidate</th>
@@ -208,6 +217,7 @@ export default function Overview() {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         </>
       )}

@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import TopNav from "./TopNav";
 import { hasValidOrgSession } from "../../api/auth";
 
 export default function Layout() {
@@ -13,14 +12,13 @@ export default function Layout() {
   }
 
   return (
-    <div className="flex flex-row bg-black h-screen w-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex flex-col flex-1">
-        <Header />
-        <div className="flex-1 p-4 min-h-0 overflow-auto">
+    <div className="min-h-dvh bg-black text-white flex flex-col">
+      <TopNav />
+      <main className="flex-1 overflow-auto">
+        <div className="max-w-7xl mx-auto w-full px-5 py-8">
           <Outlet />
         </div>
-      </div>
+      </main>
     </div>
   );
 }
