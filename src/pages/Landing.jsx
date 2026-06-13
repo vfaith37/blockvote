@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import WEB_IMAGE from "../assets/web.png";
+import GLOBE from "../assets/globe.svg";
 import LOGO from "../assets/logo.png";
 import DASHBOARD_IMAGE from "../assets/dashboard.png";
+import DASHBOARD_LIGHT from "../assets/dashboard-light.svg";
 import DASHBOARD_IMG from "../assets/img.png";
+import TABLE_LIGHT from "../assets/table-light.svg";
 import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import {
@@ -154,7 +156,7 @@ export default function Landing() {
           </p>
         </div>
         <img
-          src={WEB_IMAGE}
+          src={GLOBE}
           alt="Illustration of secure online voting"
           className="w-full max-w-md lg:max-w-[520px]"
         />
@@ -171,7 +173,16 @@ export default function Landing() {
           anywhere and administrators can manage elections with ease.
         </p>
         <div className="mt-14 border dark:border-neutral-800 border-neutral-300 p-2 dark:bg-black/40 bg-white/60">
-          <img src={DASHBOARD_IMAGE} alt="BlockVote dashboard preview" />
+          <img
+            src={DASHBOARD_IMAGE}
+            alt="BlockVote dashboard preview"
+            className="hidden dark:block"
+          />
+          <img
+            src={DASHBOARD_LIGHT}
+            alt="BlockVote dashboard preview"
+            className="dark:hidden"
+          />
         </div>
       </section>
 
@@ -208,7 +219,12 @@ export default function Landing() {
           <img
             src={DASHBOARD_IMG}
             alt="BlockVote election management"
-            className="w-full max-w-xl"
+            className="hidden dark:block w-full max-w-xl"
+          />
+          <img
+            src={TABLE_LIGHT}
+            alt="BlockVote election management"
+            className="dark:hidden w-full max-w-xl"
           />
         </div>
       </section>

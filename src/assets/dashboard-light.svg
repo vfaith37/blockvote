@@ -1,0 +1,148 @@
+<svg width="1267" height="696" viewBox="0 0 1267 696" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Outfit, Segoe UI, Arial, sans-serif">
+  <defs>
+    <clipPath id="frame">
+      <rect x="2" y="2" width="1263" height="692" rx="20"/>
+    </clipPath>
+  </defs>
+
+  <!-- Window frame -->
+  <rect x="2" y="2" width="1263" height="692" rx="20" fill="#eef4f3" stroke="#0d9488" stroke-width="3"/>
+
+  <g clip-path="url(#frame)">
+    <!-- App surface -->
+    <rect x="48" y="40" width="1171" height="640" rx="10" fill="#ffffff" stroke="#e2e8e6"/>
+
+    <!-- Sidebar -->
+    <rect x="72" y="88" width="14" height="14" rx="3" fill="#0d9488"/>
+    <text x="94" y="101" font-size="17" font-weight="700" fill="#0b1411">blockvote</text>
+
+    <text x="72" y="192" font-size="12" letter-spacing="2" fill="#8aa19b">DASHBOARD</text>
+
+    <rect x="64" y="208" width="172" height="40" rx="20" fill="#e6f4f1"/>
+    <rect x="88" y="221" width="14" height="14" rx="3" fill="#0f766e"/>
+    <text x="116" y="233" font-size="14" font-weight="600" fill="#0f766e">Overview</text>
+
+    <rect x="88" y="275" width="14" height="14" rx="3" fill="#9fb4ae"/>
+    <text x="116" y="287" font-size="14" fill="#5b6f69">Elections</text>
+    <rect x="88" y="329" width="14" height="14" rx="3" fill="#9fb4ae"/>
+    <text x="116" y="341" font-size="14" fill="#5b6f69">Candidates</text>
+    <rect x="88" y="383" width="14" height="14" rx="3" fill="#9fb4ae"/>
+    <text x="116" y="395" font-size="14" fill="#5b6f69">Create</text>
+    <rect x="88" y="437" width="14" height="14" rx="3" fill="#9fb4ae"/>
+    <text x="116" y="449" font-size="14" fill="#5b6f69">Settings</text>
+
+    <!-- Header -->
+    <rect x="286" y="84" width="366" height="40" rx="20" fill="#ffffff" stroke="#d4e0dc"/>
+    <circle cx="312" cy="104" r="6" stroke="#8aa19b" stroke-width="1.6" fill="none"/>
+    <line x1="316.5" y1="108.5" x2="321" y2="113" stroke="#8aa19b" stroke-width="1.6"/>
+    <text x="334" y="109" font-size="13" fill="#8aa19b">Search here</text>
+
+    <text x="1110" y="100" font-size="15" font-weight="700" fill="#0b1411" text-anchor="end">Fagbohun Victor</text>
+    <text x="1110" y="120" font-size="13" font-weight="600" fill="#0d9488" text-anchor="end">Admin</text>
+    <circle cx="1141" cy="104" r="17" fill="#cfe6e1"/>
+    <circle cx="1141" cy="99" r="6" fill="#7da89f"/>
+    <path d="M1130 113 Q 1141 104 1152 113 L 1152 117 Q 1141 122 1130 117 Z" fill="#7da89f"/>
+
+    <!-- Page heading -->
+    <text x="286" y="192" font-size="13" fill="#8aa19b">Mon 29 Jan, 2024</text>
+    <text x="286" y="226" font-size="28" font-weight="700" fill="#0b1411">Overview</text>
+    <rect x="1071" y="194" width="96" height="30" rx="6" fill="#0d9488"/>
+    <text x="1107" y="214" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle">Export</text>
+
+    <!-- Chart card -->
+    <rect x="276" y="262" width="919" height="406" rx="14" fill="#ffffff" stroke="#d4e0dc"/>
+    <text x="328" y="304" font-size="16" font-weight="600" fill="#0b1411">Candidates Analytics</text>
+
+    <circle cx="788" cy="298" r="4" fill="#0f766e"/>
+    <text x="798" y="303" font-size="12" fill="#5b6f69">100 lvl</text>
+    <circle cx="853" cy="298" r="4" fill="#14b8a6"/>
+    <text x="863" y="303" font-size="12" fill="#5b6f69">200 lvl</text>
+    <circle cx="918" cy="298" r="4" fill="#5eead4"/>
+    <text x="928" y="303" font-size="12" fill="#5b6f69">300 lvl</text>
+    <circle cx="983" cy="298" r="4" fill="#ccfbf1"/>
+    <text x="993" y="303" font-size="12" fill="#5b6f69">400 lvl and above</text>
+
+    <!-- Gridlines + y labels -->
+    <g stroke="#dbe7e3" stroke-dasharray="4 5">
+      <line x1="400" y1="355" x2="1150" y2="355"/>
+      <line x1="400" y1="396" x2="1150" y2="396"/>
+      <line x1="400" y1="437" x2="1150" y2="437"/>
+      <line x1="400" y1="478" x2="1150" y2="478"/>
+      <line x1="400" y1="519" x2="1150" y2="519"/>
+      <line x1="400" y1="560" x2="1150" y2="560"/>
+      <line x1="400" y1="601" x2="1150" y2="601"/>
+      <line x1="400" y1="642" x2="1150" y2="642"/>
+    </g>
+    <g font-size="12" fill="#8aa19b" text-anchor="end">
+      <text x="388" y="359">700</text>
+      <text x="388" y="400">600</text>
+      <text x="388" y="441">500</text>
+      <text x="388" y="482">400</text>
+      <text x="388" y="523">300</text>
+      <text x="388" y="564">200</text>
+      <text x="388" y="605">100</text>
+      <text x="388" y="646">0</text>
+    </g>
+
+    <!-- Stacked bars: bottom #ccfbf1, #5eead4, #14b8a6, top #0f766e -->
+    <g>
+      <rect x="413" y="601" width="40" height="41" fill="#ccfbf1"/>
+      <rect x="413" y="560" width="40" height="41" fill="#5eead4"/>
+      <rect x="413" y="519" width="40" height="41" fill="#14b8a6"/>
+      <rect x="413" y="491" width="40" height="28" fill="#0f766e"/>
+
+      <rect x="491" y="586" width="40" height="56" fill="#ccfbf1"/>
+      <rect x="491" y="530" width="40" height="56" fill="#5eead4"/>
+      <rect x="491" y="478" width="40" height="52" fill="#14b8a6"/>
+      <rect x="491" y="430" width="40" height="48" fill="#0f766e"/>
+
+      <rect x="569" y="571" width="40" height="71" fill="#ccfbf1"/>
+      <rect x="569" y="540" width="40" height="31" fill="#5eead4"/>
+      <rect x="569" y="494" width="40" height="46" fill="#14b8a6"/>
+      <rect x="569" y="450" width="40" height="44" fill="#0f766e"/>
+
+      <rect x="647" y="591" width="40" height="51" fill="#ccfbf1"/>
+      <rect x="647" y="540" width="40" height="51" fill="#5eead4"/>
+      <rect x="647" y="486" width="40" height="54" fill="#14b8a6"/>
+      <rect x="647" y="430" width="40" height="56" fill="#0f766e"/>
+
+      <rect x="725" y="596" width="40" height="46" fill="#ccfbf1"/>
+      <rect x="725" y="568" width="40" height="28" fill="#5eead4"/>
+      <rect x="725" y="514" width="40" height="54" fill="#14b8a6"/>
+      <rect x="725" y="466" width="40" height="48" fill="#0f766e"/>
+
+      <rect x="803" y="601" width="40" height="41" fill="#ccfbf1"/>
+      <rect x="803" y="560" width="40" height="41" fill="#5eead4"/>
+      <rect x="803" y="524" width="40" height="36" fill="#14b8a6"/>
+      <rect x="803" y="491" width="40" height="33" fill="#0f766e"/>
+
+      <rect x="881" y="601" width="40" height="41" fill="#ccfbf1"/>
+      <rect x="881" y="560" width="40" height="41" fill="#5eead4"/>
+      <rect x="881" y="524" width="40" height="36" fill="#14b8a6"/>
+      <rect x="881" y="491" width="40" height="33" fill="#0f766e"/>
+
+      <rect x="959" y="601" width="40" height="41" fill="#ccfbf1"/>
+      <rect x="959" y="560" width="40" height="41" fill="#5eead4"/>
+      <rect x="959" y="524" width="40" height="36" fill="#14b8a6"/>
+      <rect x="959" y="491" width="40" height="33" fill="#0f766e"/>
+
+      <rect x="1037" y="601" width="40" height="41" fill="#ccfbf1"/>
+      <rect x="1037" y="560" width="40" height="41" fill="#5eead4"/>
+      <rect x="1037" y="524" width="40" height="36" fill="#14b8a6"/>
+      <rect x="1037" y="491" width="40" height="33" fill="#0f766e"/>
+    </g>
+
+    <!-- X labels -->
+    <g font-size="12" fill="#5b6f69" text-anchor="middle">
+      <text x="433" y="668">President</text>
+      <text x="511" y="668">Vice Pres.</text>
+      <text x="589" y="668">Social Dir.</text>
+      <text x="667" y="668">Chaplain</text>
+      <text x="745" y="668">General Sec.</text>
+      <text x="823" y="668">Dir. of Sport</text>
+      <text x="901" y="668">DFR</text>
+      <text x="979" y="668">Dir. of Transport</text>
+      <text x="1057" y="668">PRO</text>
+    </g>
+  </g>
+</svg>
