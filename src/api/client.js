@@ -1,9 +1,13 @@
 import axios from "axios";
 import { getOrgToken, getVoterToken } from "./auth";
 
-const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:9000/api",
-});
+// The API is always mounted at /api on the backend. Normalize VITE_API_URL so
+// it works whether it's set to the host ("https://api.example.com") or already
+// includes the suffix ("https://api.example.com/api") — both resolve to /api.
+const RAW_BASE = import.meta.env.VITE_API_URL || "http://localhost:9000";
+const baseURL = RAW_BASE.replace(/\/+$/, "").replace(/\/api$/, "") + "/api";
+
+const client = axios.create({ baseURL });
 
 // Only the voter's own ballot actions use the voter JWT; every other call
 // (including admin voter-management endpoints like getAllVoters) uses the
