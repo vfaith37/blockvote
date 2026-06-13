@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { HiOutlineCheck, HiOutlineSave, HiOutlineTrash } from "react-icons/hi";
 import { FaEdit } from "react-icons/fa";
 import Modal from "./Modal";
@@ -19,71 +19,39 @@ export default function Voters() {
   const [voterToDelete, setVoterToDelete] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const electionId = localStorage.getItem("electionId");
-  const refreshToken = localStorage.getItem("refreshToken");
-  const myHeaders = {
-    "Content-Type": "application/json",
-  };
 
-  const requestOptions = {
-    headers: myHeaders,
+  const refreshVoters = async () => {
+    try {
+      const res = await client.get(`voter/getAllVoters/${electionId}`);
+      if (res.status === 200) setVoterData(res.data.data);
+    } catch (error) {
+      console.error("Error fetching voters:", error);
+    }
   };
 
   const onSubmit = async (values, actions) => {
-    console.log(values);
-    const myHeader = {
-      Cookie: `refreshToken=${refreshToken}`,
-      "Content-Type": "multipart/form-data", // Set Content-Type for FormData
-    };
-
-    const axiosConfig = {
-      headers: myHeader,
-    };
-    // try {
-    //   const formData = new FormData();
-    //   formData.append("firstname", values.firstname);
-    //   formData.append("lastname", values.lastname);
-    //   formData.append("email", values.email);
-
-    //   const response = await client.post(
-    //     `/voter/addNewVoter/${electionId}`,
-    //     formData,
-    //     axiosConfig
-    //   );
-    //   if (response.status === 200) {
-    //     try {
-    //       const res = await client.get(
-    //         `voter/getAllVoters/${electionId}`,
-    //         requestOptions
-    //       );
-    //       if (res.status === 200) {
-    //         setVoterData(res.data.data);
-    //       }
-    //     } catch (error) {}
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   onClose();
-    // }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
+    try {
+      // Registers a single voter; the server generates and emails their
+      // password, so we only send identity fields.
+      const response = await client.post(
+        `voter/registerVoter/${electionId}`,
+        values
+      );
+      if (response.status === 200) {
+        await refreshVoters();
+      }
+    } catch (error) {
+      console.error("Error registering voter:", error);
+    } finally {
+      onClose();
+      actions.resetForm();
+    }
   };
 
-//   useEffect(() => {
-//     const getAllElections = async () => {
-//       try {
-//         const res = await client.get(
-//           `voter/getAllVoters/${electionId}`,
-//           requestOptions
-//         );
-//         if (res.status === 200) {
-//           setVoterData(res.data.data);
-//         }
-//       } catch (error) {}
-//     };
-//     getAllElections();
-//   }, []);
+  useEffect(() => {
+    if (electionId) refreshVoters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     values,
@@ -134,8 +102,7 @@ export default function Voters() {
               if (response.status === 200) {
                 try {
                   const res = await client.get(
-                    `voter/getAllVoters/${electionId}`,
-                    requestOptions
+                    `voter/getAllVoters/${electionId}`
                   );
                   if (res.status === 200) {
                     setVoterData(res.data.data);
@@ -164,8 +131,7 @@ export default function Voters() {
   const confirmDelete = async () => {
     try {
       const response = await client.delete(
-        `/voter/deleteVoter/${voterToDelete}/${electionId}`,
-        requestOptions
+        `/voter/deleteVoter/${voterToDelete}/${electionId}`
       );
       if (response.status === 200) {
         // Update voter data after deletion

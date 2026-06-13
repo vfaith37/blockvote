@@ -20,6 +20,17 @@ import { format } from "date-fns";
 const inputStyles =
   "bg-transparent border-b border-neutral-600 focus:border-teal-500 focus:outline-none transition-colors w-[340px] h-10 text-white";
 
+function AuditCheck({ ok, label }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className={ok ? "text-teal-500" : "text-red-500"}>
+        {ok ? "✓" : "✗"}
+      </span>
+      <span className="text-neutral-300">{label}</span>
+    </div>
+  );
+}
+
 export default function Create() {
   const [open, setOpen] = useState(false);
   const [selectedStartDateTime, setSelectedStartDateTime] = useState(null);
@@ -202,6 +213,28 @@ export default function Create() {
       setFinalizing(false);
       setShowFinalizeConfirm(false);
       setSelectedElection(null);
+    }
+  };
+
+  const handleCommitRoll = async (electionId) => {
+    setActionMessage(null);
+    try {
+      const res = await client.post(`election/commitRoll/${electionId}`);
+      setActionMessage({
+        ok: true,
+        text: `${res.data.message} (${res.data.rollSize} voter${
+          res.data.rollSize === 1 ? "" : "s"
+        })`,
+      });
+    } catch (error) {
+      setActionMessage({
+        ok: false,
+        text:
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          "Failed to commit the eligibility roll.",
+      });
     }
   };
 
@@ -465,6 +498,13 @@ export default function Create() {
                           <HiOutlineTrash />
                         </button>
                         <button
+                          onClick={() => handleCommitRoll(item._id)}
+                          className="bg-teal-700 items-center flex justify-center text-gray-50 rounded-lg px-2 h-8 text-xs font-medium"
+                          title="Freeze the eligible voter roll on-chain (after voters register passkeys, before voting opens)"
+                        >
+                          Commit roll
+                        </button>
+                        <button
                           onClick={() => handleAudit(item._id)}
                           className="border border-teal-600 items-center flex justify-center text-teal-500 rounded-lg w-14 h-8 text-xs font-medium"
                         >
@@ -545,51 +585,62 @@ export default function Create() {
                       }`}
                     >
                       {auditResult.consistent
-                        ? "✓ Database matches the blockchain"
-                        : "✗ Mismatch detected between database and blockchain"}
+                        ? "✓ On-chain electorate matches the registered voters"
+                        : "✗ Integrity check failed"}
                     </p>
                     <p className="text-sm mt-2 text-neutral-400">
                       {auditResult.election.name} — on-chain state:{" "}
                       {auditResult.election.state} —{" "}
                       {auditResult.election.totalBallots} ballot(s) cast
                     </p>
+
+                    {/* Integrity checks */}
+                    <div className="w-full mt-5 flex flex-col gap-2 text-sm">
+                      <AuditCheck
+                        ok={auditResult.checks.rollCommitted}
+                        label="Eligibility roll committed on-chain"
+                      />
+                      <AuditCheck
+                        ok={auditResult.checks.rollMatches}
+                        label={`Committed roll matches the ${auditResult.checks.registeredVoters} registered voter(s)`}
+                      />
+                      <AuditCheck
+                        ok={auditResult.checks.turnoutValid}
+                        label="Ballots cast do not exceed the roll size"
+                      />
+                    </div>
+                    {auditResult.checks.onChainRoot && (
+                      <p className="hash text-neutral-500 mt-3 break-all">
+                        root: {auditResult.checks.onChainRoot}
+                      </p>
+                    )}
+
+                    {/* Canonical tally from the chain */}
                     <table className="table-auto w-full mt-6">
                       <thead>
                         <tr>
                           <th className="text-left text-stone-500 text-sm font-medium pb-2">
                             Candidate
                           </th>
-                          <th className="text-center text-stone-500 text-sm font-medium pb-2">
-                            Database
+                          <th className="text-left text-stone-500 text-sm font-medium pb-2">
+                            Position
                           </th>
-                          <th className="text-center text-stone-500 text-sm font-medium pb-2">
-                            Blockchain
-                          </th>
-                          <th className="text-center text-stone-500 text-sm font-medium pb-2">
-                            Match
+                          <th className="text-right text-stone-500 text-sm font-medium pb-2">
+                            Votes (on-chain)
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {auditResult.comparison.map((row) => (
+                        {auditResult.tally.map((row) => (
                           <tr key={row.candidateId}>
                             <td className="text-white text-sm py-1">
                               {row.name}
                             </td>
-                            <td className="text-white text-sm py-1 text-center">
-                              {row.databaseVotes}
+                            <td className="text-neutral-400 text-sm py-1">
+                              {row.position}
                             </td>
-                            <td className="text-white text-sm py-1 text-center">
-                              {row.onChainVotes == null
-                                ? "—"
-                                : row.onChainVotes}
-                            </td>
-                            <td
-                              className={`text-sm py-1 text-center ${
-                                row.match ? "text-teal-500" : "text-red-500"
-                              }`}
-                            >
-                              {row.match ? "✓" : "✗"}
+                            <td className="text-teal-400 text-sm py-1 text-right font-semibold">
+                              {row.votes}
                             </td>
                           </tr>
                         ))}

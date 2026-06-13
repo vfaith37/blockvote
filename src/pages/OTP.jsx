@@ -15,9 +15,32 @@ const OTP = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const [resendMsg, setResendMsg] = useState(null);
+  const [resending, setResending] = useState(false);
+
   const Data = {
     email: username,
     password: password,
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    setResendMsg(null);
+    try {
+      const res = await client.post("organization/resendToken", {
+        email: username,
+      });
+      setResendMsg({ ok: true, text: res.data.message });
+    } catch (e) {
+      setResendMsg({
+        ok: false,
+        text:
+          (e.response && e.response.data && e.response.data.message) ||
+          "Could not resend the code.",
+      });
+    } finally {
+      setResending(false);
+    }
   };
 
   const onSubmit = async (values) => {
@@ -125,11 +148,24 @@ const OTP = () => {
 
         <p className="text-center text-sm text-neutral-500 mt-6">
           Didn't receive a code?
-          <span className="text-teal-600 font-semibold cursor-pointer">
-            {" "}
-            Resend
-          </span>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resending}
+            className="text-teal-600 font-semibold disabled:opacity-50 bg-transparent ml-1"
+          >
+            {resending ? "Resending..." : "Resend"}
+          </button>
         </p>
+        {resendMsg && (
+          <p
+            className={`text-center text-sm mt-2 ${
+              resendMsg.ok ? "text-teal-600" : "text-red-600"
+            }`}
+          >
+            {resendMsg.text}
+          </p>
+        )}
       </form>
     </div>
   );

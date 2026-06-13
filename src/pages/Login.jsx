@@ -5,6 +5,7 @@ import { signInSchema } from "../schemas";
 import classNames from "classnames";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import client from "../api/client";
+import { hasValidOrgSession } from "../api/auth";
 
 const inputStyles =
   "w-full h-12 px-3 mt-2 text-black bg-white/70 border border-neutral-400 " +
@@ -53,8 +54,9 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const rem = localStorage.getItem("rememberMe");
-    if (rem === "true") {
+    // Skip the login screen only when there is a still-valid session, not just
+    // because "remember me" was once ticked.
+    if (hasValidOrgSession()) {
       navigate("/dashboard", { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

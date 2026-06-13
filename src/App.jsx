@@ -26,11 +26,11 @@ import {
 } from "./components/VotersWelcome";
 import ErrorPage from "./components/ErrorPage";
 import Voters from "./components/Voters";
+import { hasValidVoterSession } from "./api/auth";
 
-// Voter pages require the JWT issued by /voter/login.
+// Voter pages require a valid (present, unexpired) JWT from /voter/login.
 function RequireVoter({ children }) {
-  const voterToken = localStorage.getItem("voterToken");
-  if (!voterToken) {
+  if (!hasValidVoterSession()) {
     return <Navigate to="/voters/login" replace />;
   }
   return children;

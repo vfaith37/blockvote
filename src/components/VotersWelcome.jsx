@@ -12,6 +12,12 @@ import { jsPDF } from "jspdf";
 import Carousel from "./Carousel";
 import LOGO from "../assets/logo.png";
 import client from "../api/client";
+import {
+  isSupported,
+  registerPasskey,
+  ballotChallenge,
+  signBallot,
+} from "../api/webauthn";
 
 const getVoterInfo = () => {
   try {
@@ -43,6 +49,40 @@ export function VotersWelcome() {
   const voter = getVoterInfo();
   const firstname = voter && voter.firstname ? voter.firstname : "Voter";
 
+  const [hasPasskey, setHasPasskey] = useState(
+    Boolean(localStorage.getItem("voterCredentialId"))
+  );
+  const [registering, setRegistering] = useState(false);
+  const [error, setError] = useState(null);
+
+  const setupPasskey = async () => {
+    setError(null);
+    if (!isSupported()) {
+      setError("This device or browser does not support passkeys.");
+      return;
+    }
+    setRegistering(true);
+    try {
+      const { credentialId, pubKeyX, pubKeyY } = await registerPasskey({
+        voterId: voter._id,
+        voterName: `${voter.firstname} ${voter.lastname} (${voter.email})`,
+      });
+      await client.post("voter/registerPasskey", {
+        credentialId,
+        pubKeyX,
+        pubKeyY,
+      });
+      localStorage.setItem("voterCredentialId", credentialId);
+      setHasPasskey(true);
+    } catch (e) {
+      setError(
+        apiErrorMessage(e, "Passkey setup was cancelled or failed. Try again.")
+      );
+    } finally {
+      setRegistering(false);
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col justify-center items-center text-center max-w-3xl py-16">
       <div className="rise">
@@ -55,19 +95,37 @@ export function VotersWelcome() {
         </span>
       </h1>
       <p className="rise rise-2 text-neutral-500 text-lg sm:text-2xl font-normal mt-4 leading-relaxed">
-        Let's walk you through the voting process.
+        {hasPasskey
+          ? "Let's walk you through the voting process."
+          : "First, set up a passkey — it signs your ballot so only you can cast it."}
       </p>
       {voter && voter.hasVoted && (
         <p className="rise rise-3 text-amber-500 text-sm sm:text-base mt-6 border border-amber-500/30 bg-amber-500/5 px-4 py-2">
           Our records show you have already cast your ballot for this election.
         </p>
       )}
-      <button
-        onClick={() => navigate("info")}
-        className="rise rise-3 btn-primary w-36 h-14 mt-16 text-base"
-      >
-        Next <HiArrowNarrowRight />
-      </button>
+      {error && (
+        <p role="alert" className="rise rise-3 text-red-500 text-sm mt-6">
+          {error}
+        </p>
+      )}
+      {!hasPasskey ? (
+        <button
+          onClick={setupPasskey}
+          disabled={registering}
+          className="rise rise-3 btn-primary w-56 h-14 mt-16 text-base"
+        >
+          <HiOutlineShieldCheck size={18} />
+          {registering ? "Setting up..." : "Set up passkey"}
+        </button>
+      ) : (
+        <button
+          onClick={() => navigate("info")}
+          className="rise rise-3 btn-primary w-36 h-14 mt-16 text-base"
+        >
+          Next <HiArrowNarrowRight />
+        </button>
+      )}
     </div>
   );
 }
@@ -323,15 +381,40 @@ export function VoterSelect() {
       return;
     }
 
+    const credentialId = localStorage.getItem("voterCredentialId");
+    if (!credentialId) {
+      setError("No passkey found on this device. Go back and set one up.");
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
     try {
-      const res = await client.post(
-        "voter/vote",
-        selections.map((candidate) => ({ _id: candidate._id }))
-      );
-
       const voter = getVoterInfo();
+
+      // The on-chain election id; candidate ids are their on-chain indices,
+      // canonicalised (strictly increasing) to match the signed challenge.
+      const electionRes = await client.get(
+        `election/getElection/${voter.election}`
+      );
+      const electionChainId = electionRes.data.data.blockchainId;
+      const candidateIds = selections
+        .map((c) => c.blockchainId)
+        .filter((id) => id != null)
+        .sort((a, b) => a - b);
+
+      if (candidateIds.length !== selections.length) {
+        throw new Error(
+          "Some candidates are not registered on the blockchain yet."
+        );
+      }
+
+      // The voter's passkey signs the ballot challenge in the authenticator.
+      const challenge = await ballotChallenge(electionChainId, candidateIds);
+      const auth = await signBallot({ credentialId, challengeBytes: challenge });
+
+      const res = await client.post("voter/vote", { candidateIds, auth });
+
       if (voter) {
         voter.hasVoted = true;
         localStorage.setItem("voterInfo", JSON.stringify(voter));
@@ -347,7 +430,9 @@ export function VoterSelect() {
         navigate("/voters/login", { replace: true });
         return;
       }
-      setError(apiErrorMessage(e, "Your ballot could not be recorded."));
+      setError(
+        apiErrorMessage(e, e.message || "Your ballot could not be recorded.")
+      );
       setSubmitting(false);
     }
   };
@@ -453,7 +538,7 @@ export function VotingEnd() {
       `Block number: ${receipt.blockNumber}`,
       `Election ID (on-chain): ${receipt.electionId}`,
       `Candidate IDs (on-chain): ${receipt.candidateIds.join(", ")}`,
-      `Voter hash: ${receipt.voterHash}`,
+      `Nullifier: ${receipt.nullifier}`,
       `Ballot receipt: ${receipt.ballotReceipt}`,
       "",
       "Anyone can verify this ballot against the blockchain using the",
@@ -474,7 +559,7 @@ export function VotingEnd() {
       const res = await client.post("voter/verifyBallot", {
         electionId: receipt.electionId,
         candidateIds: receipt.candidateIds,
-        voterHash: receipt.voterHash,
+        nullifier: receipt.nullifier,
         blockNumber: receipt.blockNumber,
       });
       setVerification({
@@ -529,7 +614,7 @@ export function VotingEnd() {
               label="transaction hash"
               value={receipt.transactionHash}
             />
-            <ReceiptField label="voter hash" value={receipt.voterHash} />
+            <ReceiptField label="nullifier" value={receipt.nullifier} />
             <ReceiptField
               label="ballot receipt"
               value={receipt.ballotReceipt}

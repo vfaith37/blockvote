@@ -20,25 +20,11 @@ export default function Candidates() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const fileRef = useRef(null);
   const electionId = localStorage.getItem("electionId");
-  const refreshToken = localStorage.getItem("refreshToken");
-  const myHeaders = {
-    "Content-Type": "application/json",
-  };
-
-  const requestOptions = {
-    headers: myHeaders,
-  };
 
   const onSubmit = async (values, actions) => {
-    const myHeader = {
-      Cookie: `refreshToken=${refreshToken}`,
-      "Content-Type": "multipart/form-data", // Set Content-Type for FormData
-    };
-
-    const axiosConfig = {
-      headers: myHeader,
-    };
     try {
+      // Let the browser set the multipart boundary; the auth header is added
+      // by the axios interceptor.
       const formData = new FormData();
       formData.append("firstname", values.firstname);
       formData.append("lastname", values.lastname);
@@ -47,43 +33,35 @@ export default function Candidates() {
 
       const response = await client.post(
         `/candidate/addNewCandidate/${electionId}`,
-        formData,
-        axiosConfig
+        formData
       );
       if (response.status === 200) {
-        try {
-          const res = await client.get(
-            `candidate/getAllCandidates/${electionId}`,
-            requestOptions
-          );
-          if (res.status === 200) {
-            setCandidateData(res.data.data);
-          }
-        } catch (error) {}
+        const res = await client.get(
+          `candidate/getAllCandidates/${electionId}`
+        );
+        if (res.status === 200) setCandidateData(res.data.data);
       }
     } catch (error) {
       console.error(error);
     } finally {
       onClose();
+      actions.resetForm();
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
   };
 
   useEffect(() => {
-    const getAllElections = async () => {
+    const getAllCandidates = async () => {
       try {
         const res = await client.get(
-          `candidate/getAllCandidates/${electionId}`,
-          requestOptions
+          `candidate/getAllCandidates/${electionId}`
         );
-        if (res.status === 200) {
-          setCandidateData(res.data.data);
-        }
-      } catch (error) {}
+        if (res.status === 200) setCandidateData(res.data.data);
+      } catch (error) {
+        console.error("Error fetching candidates:", error);
+      }
     };
-    getAllElections();
+    if (electionId) getAllCandidates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
@@ -137,8 +115,7 @@ export default function Candidates() {
               if (response.status === 200) {
                 try {
                   const res = await client.get(
-                    `candidate/getAllCandidates/${electionId}`,
-                    requestOptions
+                    `candidate/getAllCandidates/${electionId}`
                   );
                   if (res.status === 200) {
                     setCandidateData(res.data.data);
@@ -167,8 +144,7 @@ export default function Candidates() {
   const confirmDelete = async () => {
     try {
       const response = await client.delete(
-        `/candidate/deleteCandidate/${candidateToDelete}/${electionId}`,
-        requestOptions
+        `/candidate/deleteCandidate/${candidateToDelete}/${electionId}`
       );
       if (response.status === 200) {
         // Update candidate data after deletion

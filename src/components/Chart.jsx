@@ -2,55 +2,28 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 
-const StackedBarChart = () => {
+// Renders real candidate vote counts when given { labels, values }; falls back
+// to a neutral empty axis otherwise.
+const StackedBarChart = ({ labels = [], values = [] }) => {
   const data = {
-    labels: [
-      "President",
-      "Vice Pres.",
-      "Social Dir.",
-      "Chaplain",
-      "General Sec.",
-      "Dir. of Sport",
-      "DFR",
-      "Dir. of Transport",
-      "PRO",
-    ],
+    labels: labels.length ? labels : ["No candidates yet"],
     datasets: [
       {
-        label: "100 lvl",
-        data: [300, 500, 400, 600, 700, 500, 400, 600, 300],
-        backgroundColor: "#D9D9D9",
+        label: "Votes",
+        data: values.length ? values : [0],
+        backgroundColor: "#0d9488",
+        hoverBackgroundColor: "#14b8a6",
+        borderRadius: 6,
+        maxBarThickness: 56,
       },
-      {
-        label: "200 lvl",
-        data: [200, 300, 200, 300, 400, 300, 200, 300, 200],
-        backgroundColor: "#979797",
-      },
-      {
-        label: "300 lvl",
-        data: [100, 200, 100, 200, 300, 200, 100, 200, 100], // Adjust the data for 300 level
-        backgroundColor: "#484848", // Example color
-      },
-      {
-        label: "400 lvl",
-        data: [50, 100, 50, 100, 150, 100, 50, 100, 50], // Adjust the data for 400 level
-        backgroundColor: "#5C6262", // Example color
-        borderRadius: 10,
-      
-      },
-      // Add more datasets for higher levels as needed
     ],
   };
   let delayed;
   const options = {
     plugins: {
     legend: {
-          position: "top",
-          align: "end",
-        labels: {
-          usePointStyle: true,
+          display: false,
         },
-      }
     },
     animation: {
         onComplete: () => {
